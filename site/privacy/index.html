@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Privacy policy for Keyvane, a free, end-to-end encrypted password manager for Chrome.">
+<link rel="canonical" href="https://keyvane.vercel.app/privacy">
+<title>Keyvane Privacy Policy</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+  /* Layout: single readable column, a summary panel up top, then the policy sections */
+  :root {
+    --bg: #f7f7fb; --fg: #161827; --muted: #5d6278; --line: #e2e3ee; --panel: #ffffff;
+    --accent: #6d4ae0; --accent-2: #0e9fbf;
+    --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+    --body: "Inter", "Segoe UI", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #090a10; --fg: #eceef7; --muted: #959ab2; --line: #20232f; --panel: #11131c;
+    --accent: #a78bfa; --accent-2: #22d3ee; color-scheme: dark } }
+  :root[data-theme="dark"] {
+    --bg: #090a10; --fg: #eceef7; --muted: #959ab2; --line: #20232f; --panel: #11131c;
+    --accent: #a78bfa; --accent-2: #22d3ee; color-scheme: dark }
+
+  body { background: var(--bg); color: var(--fg); font: 16px/1.65 var(--body); }
+  .wrap { max-width: 720px; margin: 0 auto; padding-block: 56px 80px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: flex; flex-direction: column; gap: 36px; }
+  header { display: flex; flex-direction: column; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; font: 700 15px var(--display); color: var(--muted); letter-spacing: .02em; }
+  .mark { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); display: grid; place-items: center; }
+  .mark svg { width: 15px; height: 15px; }
+  h1 { font: 700 clamp(32px, 6vw, 44px)/1.1 var(--display); letter-spacing: -.02em; text-wrap: balance; }
+  .meta { font: 500 12px var(--mono); color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+  .summary { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; display: grid; gap: 14px; }
+  .summary h2 { font: 600 13px var(--body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  .summary ul { list-style: none; display: grid; gap: 10px; padding: 0; margin: 0; }
+  .summary li { display: grid; grid-template-columns: 20px 1fr; gap: 10px; }
+  .summary li::before { content: ""; width: 8px; height: 8px; margin-top: 9px; border-radius: 50%; background: var(--accent-2); }
+  section { display: flex; flex-direction: column; gap: 10px; }
+  h2.s { font: 700 21px/1.3 var(--display); letter-spacing: -.01em; }
+  p, li { max-width: 65ch; }
+  section ul { padding-left: 20px; margin: 0; display: grid; gap: 6px; }
+  code { font: 500 .88em var(--mono); background: var(--panel); border: 1px solid var(--line); padding: 1px 6px; border-radius: 6px; }
+  .muted { color: var(--muted); }
+  a { color: var(--accent); }
+  a:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; border-radius: 4px; }
+</style>
+<style>* { box-sizing: border-box; } h1, h2, p { margin: 0; } body { margin: 0; -webkit-font-smoothing: antialiased; } .home { font-size: 14px; color: var(--muted); text-decoration: none; } .home:hover { color: var(--fg); }</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <a class="home" href="/">← Keyvane home</a>
+  <header>
+    <div class="brand"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>Keyvane</div>
+    <h1>Privacy Policy</h1>
+    <div class="meta">Effective November 14, 2026 · Applies to the Keyvane Chrome extension</div>
+  </header>
+
+  <div class="summary">
+    <h2>In short</h2>
+    <ul>
+      <li>We don't run any servers, and we never receive your passwords or any other data.</li>
+      <li>Your vault is encrypted on your device with your master password before it is stored or synced.</li>
+      <li>No accounts, analytics, ads, tracking or third-party code.</li>
+    </ul>
+  </div>
+
+  <section>
+    <h2 class="s">What Keyvane stores</h2>
+    <p>Keyvane stores the logins you choose to save: website address, an optional name, username or email, password and notes. It also stores your preferences, such as the auto-lock time and password-generator settings.</p>
+    <p>All login data is encrypted with AES-256-GCM using a key derived from your master password (PBKDF2-SHA256, 600,000 iterations) before it is written anywhere. Your master password itself is never stored.</p>
+  </section>
+
+  <section>
+    <h2 class="s">Where it is stored</h2>
+    <ul>
+      <li><b>Chrome sync storage</b> (<code>chrome.storage.sync</code>). If you are signed in to Chrome with sync turned on, Google's Chrome Sync carries the encrypted vault to your other Chrome browsers. Google receives only ciphertext it cannot read. Chrome Sync is governed by <a href="https://policies.google.com/privacy" rel="noopener">Google's Privacy Policy</a>.</li>
+      <li><b>Chrome session storage</b> (<code>chrome.storage.session</code>). While the vault is unlocked, the encryption key is kept in memory for this browser session only. It is cleared when you lock the vault, when auto-lock triggers, or when Chrome closes. If you sign in to a site while the vault is locked, the login Keyvane offers to save waits here until you save or dismiss it, and is also cleared when Chrome closes.</li>
+    </ul>
+    <p>If Chrome sync is off, the encrypted vault stays on your device only.</p>
+  </section>
+
+  <section>
+    <h2 class="s">What we collect</h2>
+    <p>Nothing. The extension makes no network requests of its own; its content security policy blocks all outbound connections. The developer has no way to see, recover or reset your vault.</p>
+  </section>
+
+  <section>
+    <h2 class="s">Permissions and why they're needed</h2>
+    <ul>
+      <li><code>storage</code>: to save your encrypted vault and settings.</li>
+      <li><code>activeTab</code>: to read the address of the tab you're on when you open Keyvane, so it can show matching logins. Only after you click the extension.</li>
+      <li><code>scripting</code>: to fill a username and password into the current page when you press Fill. Keyvane only fills on the site the login was saved for.</li>
+      <li><b>Optional site access</b> (asked only if you turn on "Offer to save passwords"): lets Keyvane notice when you submit a login form, so it can offer to save or update that login. It reads the username and password fields only at the moment you sign in, passes them to Keyvane's own background process on your device, and nothing else on the page. You can turn it off in Settings, which also removes the permission.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2 class="s">Importing passwords</h2>
+    <p>If you import a CSV file exported from another browser or password manager, Keyvane reads it on your device, encrypts the logins into your vault and keeps no copy of the file. The file itself is not encrypted, so delete it after importing.</p>
+  </section>
+
+  <section>
+    <h2 class="s">Sharing and selling</h2>
+    <p>Your data is not sold, shared, transferred to third parties, or used for advertising, creditworthiness or any purpose other than providing the password manager. Keyvane's use of data complies with the Chrome Web Store User Data Policy, including the Limited Use requirements.</p>
+  </section>
+
+  <section>
+    <h2 class="s">Your control</h2>
+    <ul>
+      <li>Export an encrypted backup or erase the vault at any time from Settings.</li>
+      <li>Uninstalling the extension removes its data from that browser. To remove synced copies, use Settings → Erase vault before uninstalling, or clear Chrome sync data from your Google account.</li>
+    </ul>
+    <p class="muted">There is no password recovery. If you forget your master password, the vault cannot be decrypted by anyone.</p>
+  </section>
+
+  <section>
+    <h2 class="s">Changes and contact</h2>
+    <p>If this policy changes, the new version will be posted on this page with a new effective date. For questions, use the support contact on Keyvane's Chrome Web Store listing.</p>
+  </section>
+</div>
+
+</body>
+</html>

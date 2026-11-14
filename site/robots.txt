@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://keyvane.vercel.app/sitemap.xml
