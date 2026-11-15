@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500&display=swap">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
- {"@type":"SoftwareApplication","name":"Keyvane","applicationCategory":"SecurityApplication","operatingSystem":"Chrome, Edge, Brave","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://keyvane.vercel.app/","downloadUrl":"https://chromewebstore.google.com/detail/occfjinobiaefhbkngbolamflknedmlo","description":"Free, end-to-end encrypted password manager for Chrome. No account, no servers."},
+ {"@type":"SoftwareApplication","name":"Keyvane","applicationCategory":"SecurityApplication","operatingSystem":"Chrome, Edge, Brave","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://keyvane.vercel.app/","downloadUrl":"https://chromewebstore.google.com/detail/occfjinobiaefhbkngbolamflknedmlo","description":"Free, open-source, end-to-end encrypted password manager for Chrome. No account, no servers.","sameAs":["https://github.com/dheerajcp69/keyvane"]},
  {"@type":"FAQPage","mainEntity":[
   {"@type":"Question","name":"Is Keyvane really free?","acceptedAnswer":{"@type":"Answer","text":"Yes. There are no plans, ads or paid features. Keyvane has no servers to pay for: your encrypted vault lives in your browser and syncs through your own Chrome sign-in."}},
   {"@type":"Question","name":"Can anyone else read my passwords?","acceptedAnswer":{"@type":"Answer","text":"No. Your vault is encrypted on your device with AES-256-GCM, using a key derived from your master password with 600,000 rounds of PBKDF2. Keyvane never sends data anywhere, and Google only stores ciphertext when it syncs."}},
@@ -166,7 +166,7 @@
 <header class="nav">
   <div class="wrap">
     <a class="brand" href="/"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>Keyvane</a>
-    <nav class="links"><a href="#features">Features</a><a href="#security">Security</a><a href="#faq">FAQ</a><a href="/privacy">Privacy</a></nav>
+    <nav class="links"><a href="#features">Features</a><a href="#security">Security</a><a href="#faq">FAQ</a><a href="https://github.com/dheerajcp69/keyvane" rel="noopener">GitHub</a></nav>
     <a class="cta sm" href="https://chromewebstore.google.com/detail/occfjinobiaefhbkngbolamflknedmlo" rel="noopener">Add to Chrome</a>
   </div>
 </header>
@@ -184,7 +184,7 @@
           <a class="cta" href="https://chromewebstore.google.com/detail/occfjinobiaefhbkngbolamflknedmlo" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add to Chrome, it's free</a>
           <a class="ghost" href="#security">How it stays private</a>
         </div>
-        <div class="facts"><span>No account</span><span>No servers</span><span>AES-256 encryption</span></div>
+        <div class="facts"><span>No account</span><span>No servers</span><span>AES-256 encryption</span><span>Open source</span></div>
       </div>
 
       <div class="device" aria-label="The Keyvane popup on github.com, with a Save login card">
@@ -229,7 +229,7 @@
         <div class="step"><span class="k">03 · Vault</span><h3>Encryption</h3><p><code>AES-256-GCM</code> with a fresh random nonce on every save, using your browser's built-in Web Crypto.</p></div>
         <div class="step"><span class="k">04 · Sync</span><h3>Ciphertext only</h3><p>Chrome sync carries scrambled bytes between your computers. Google can't read them.</p></div>
       </div>
-      <p class="note">The extension's security policy blocks every network connection, and the "save login" feature is off until you allow it. <a href="/privacy">Read the privacy policy.</a></p>
+      <p class="note">The extension's security policy blocks every network connection, and the "save login" feature is off until you allow it. <a href="/privacy">Read the privacy policy</a> or <a href="https://github.com/dheerajcp69/keyvane" rel="noopener">check the code on GitHub</a>.</p>
     </div>
   </section>
 
@@ -266,7 +266,7 @@
   <div class="wrap">
     <span class="brand" style="font-size:15px"><span class="mark" style="width:24px;height:24px;border-radius:7px"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" style="width:12px;height:12px"><rect x="4" y="10" width="16" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>Keyvane</span>
     <span>Free and end-to-end encrypted.</span>
-    <span style="margin-left:auto;display:flex;gap:20px"><a href="/privacy">Privacy</a><a href="https://chromewebstore.google.com/detail/occfjinobiaefhbkngbolamflknedmlo/reviews" rel="noopener">Reviews</a></span>
+    <span style="margin-left:auto;display:flex;gap:20px"><a href="https://github.com/dheerajcp69/keyvane" rel="noopener">GitHub</a><a href="/privacy">Privacy</a><a href="https://chromewebstore.google.com/detail/occfjinobiaefhbkngbolamflknedmlo/reviews" rel="noopener">Reviews</a></span>
   </div>
 </footer>
 </body>
