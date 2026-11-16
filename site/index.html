@@ -102,6 +102,14 @@
   @keyframes float { 50% { transform: translateY(-6px); } }
 
   /* sections */
+  .demo { padding-block: 8px 88px; }
+  .demo .frame { position: relative; max-width: 960px; margin: 0 auto; border-radius: 22px; overflow: hidden; border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 50px 120px -40px rgba(124,58,237,.6), 0 0 0 1px rgba(139,92,246,.15); background: var(--ink-2); aspect-ratio: 16 / 9; }
+  .demo video { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .demo .cap { text-align: center; color: var(--muted); font-size: 14px; margin-top: 16px; }
+  .demo .play { position: absolute; right: 14px; bottom: 14px; height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,.18);
+    background: rgba(7,8,13,.7); color: var(--text); font: 600 13px var(--body); cursor: pointer; backdrop-filter: blur(8px); }
+  .demo .play:hover { background: rgba(7,8,13,.9); }
   section.block { padding-block: 88px; border-top: 1px solid var(--line); position: relative; }
   .head { max-width: 640px; display: grid; gap: 14px; margin-bottom: 44px; }
   h2 { font: 700 clamp(30px, 4vw, 42px)/1.08 var(--display); letter-spacing: -.025em; text-wrap: balance; }
@@ -206,6 +214,17 @@
     </div>
   </section>
 
+  <section class="demo" aria-label="Keyvane demo video">
+    <div class="wrap">
+      <div class="frame">
+        <video id="demoVideo" src="/media/keyvane-demo.mp4" poster="/media/keyvane-demo-poster.jpg" muted loop playsinline autoplay preload="metadata"
+          aria-label="44-second tour of Keyvane: set a master password, generate a strong password, find a login, fill it in one click, import and sync, auto-lock"></video>
+        <button class="play" id="demoToggle" type="button">Pause</button>
+      </div>
+      <p class="cap">A 44-second tour: set up, generate, find, fill, import and lock.</p>
+    </div>
+  </section>
+
   <section class="block" id="features">
     <div class="wrap">
       <div class="head"><h2>Everything you need. <span class="grad">Nothing you don't.</span></h2><p>Keyvane does the everyday jobs of a password manager well, and leaves out the account, subscription and cloud.</p></div>
@@ -269,5 +288,15 @@
     <span style="margin-left:auto;display:flex;gap:20px"><a href="https://github.com/dheerajcp69/keyvane" rel="noopener">GitHub</a><a href="/privacy">Privacy</a><a href="https://chromewebstore.google.com/detail/occfjinobiaefhbkngbolamflknedmlo/reviews" rel="noopener">Reviews</a></span>
   </div>
 </footer>
+<script>
+  (function () {
+    var v = document.getElementById('demoVideo'), b = document.getElementById('demoToggle');
+    if (!v || !b) return;
+    var sync = function () { b.textContent = v.paused ? 'Play' : 'Pause'; };
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { v.removeAttribute('autoplay'); v.pause(); }
+    b.addEventListener('click', function () { v.paused ? v.play() : v.pause(); });
+    v.addEventListener('play', sync); v.addEventListener('pause', sync); sync();
+  })();
+</script>
 </body>
 </html>
