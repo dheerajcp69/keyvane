@@ -1,22 +1,40 @@
 // Keyvane background worker: offers to save logins you type into websites.
 // Runs only after the user turns on "Offer to save passwords" (optional permission).
 import * as V from './vaultops.js';
+import * as PK from './passkeys.js';
 
 const SCRIPT_ID = 'keyvane-capture';
+const PK_ID = 'keyvane-passkeys';
 const ALL = { origins: ['<all_urls>'] };
 
-async function syncCaptureScript() {
+// Requests count only from a page's top frame. (Safari may leave frameId out; Keyvane's
+// scripts are only ever registered for top frames, so a missing id is the top frame.)
+const isTop = s => s.frameId === 0 || s.frameId == null;
+
+let syncing = Promise.resolve();
+function syncCaptureScript() { return (syncing = syncing.then(doSync, doSync)); }
+async function doSync() {
   const granted = await chrome.permissions.contains(ALL);
   const { settings } = await chrome.storage.sync.get('settings');
   const on = granted && settings?.offerSave !== false;
-  const reg = await chrome.scripting.getRegisteredContentScripts({ ids: [SCRIPT_ID] });
-  if (on && !reg.length) {
-    await chrome.scripting.registerContentScripts([{
-      id: SCRIPT_ID, matches: ['http://*/*', 'https://*/*'], js: ['content.js'],
-      runAt: 'document_idle', allFrames: false, persistAcrossSessions: true
-    }]);
-  } else if (!on && reg.length) {
-    await chrome.scripting.unregisterContentScripts({ ids: [SCRIPT_ID] });
+  const pkOn = on && settings?.passkeys !== false;
+  const reg = (await chrome.scripting.getRegisteredContentScripts()).map(r => r.id);
+  const want = [
+    [SCRIPT_ID, on, { id: SCRIPT_ID, matches: ['http://*/*', 'https://*/*'], js: ['content.js'], runAt: 'document_idle', allFrames: false, persistAcrossSessions: true }],
+    // Passkeys: a page-world script that answers navigator.credentials (secure pages only).
+    [PK_ID, pkOn, { id: PK_ID, matches: ['https://*/*', 'http://localhost/*', 'http://*.localhost/*'], js: ['pk-page.js'], runAt: 'document_start', world: 'MAIN', allFrames: false, persistAcrossSessions: true }]
+  ];
+  for (const [id, should, def] of want) {
+    try {
+      if (should && !reg.includes(id)) {
+        try { await chrome.scripting.registerContentScripts([def]); }
+        catch (e) { // Safari: retry without options it may not know
+          if (def.world) throw e;
+          const { persistAcrossSessions, ...plain } = def; await chrome.scripting.registerContentScripts([plain]);
+        }
+      }
+      else if (!should && reg.includes(id)) await chrome.scripting.unregisterContentScripts({ ids: [id] });
+    } catch (e) { console.warn('Keyvane: content script', id, e); }
   }
 }
 
@@ -104,31 +122,107 @@ async function handle(msg, sender) {
     }
     case 'kv-logins?': {
       // Only the top frame, and only logins for the page's own site.
-      if (!tab || sender.frameId !== 0) return {};
+      if (!tab || !isTop(sender)) return {};
       const host = V.hostOf(sender.url || tab.url);
       if (!host) return {};
       const key = await V.getSessionKey();
       if (!key) return { locked: true };
       try {
         const { entries } = await V.readEntries(key);
-        return { logins: entries.filter(e => !e.deleted && V.siteMatch(e.host, host))
+        return { logins: entries.filter(e => !e.deleted && e.kind !== 'passkey' && V.siteMatch(e.host, host))
           .sort((x, y) => (y.updated || 0) - (x.updated || 0))
           .map(e => ({ id: e.id, username: e.username || '', title: e.title || e.host })) };
       } catch { return {}; }
     }
     case 'kv-fill': {
-      if (!tab || sender.frameId !== 0) return {};
+      if (!tab || !isTop(sender)) return {};
       const key = await V.getSessionKey();
       if (!key) return { locked: true };
       try {
         const { entries } = await V.readEntries(key);
-        const e = entries.find(x => x.id === msg.id && !x.deleted);
+        const e = entries.find(x => x.id === msg.id && !x.deleted && x.kind !== 'passkey');
         // Re-check the site here, from Chrome's own record of the page, never the page's word.
         if (!e || !V.siteMatch(e.host, V.hostOf(sender.url || tab.url))) return {};
         await chrome.storage.session.set({ lastActive: Date.now() });
         const { stats = {} } = await chrome.storage.sync.get('stats');
         await chrome.storage.sync.set({ stats: { ...stats, fills: (stats.fills || 0) + 1 } });
         return { username: e.username || '', password: e.password };
+      } catch { return {}; }
+    }
+    case 'kv-pk-precheck': {
+      if (!tab || !isTop(sender)) return { bad: true };
+      const rp = PK.checkRp(sender.url || tab.url, msg.opts?.rp?.id);
+      if (!rp) return { bad: true };
+      const algs = (msg.opts?.pubKeyCredParams || []).map(p => p.alg);
+      if (algs.length && !algs.includes(-7)) return { unsupported: true };
+      const key = await V.getSessionKey();
+      if (!key) return { locked: true, rpId: rp.rpId };
+      try {
+        const { entries } = await V.readEntries(key);
+        const ex = new Set((msg.opts.excludeCredentials || []).map(c => c.id));
+        const hit = entries.find(e => PK.isPasskey(e) && !e.deleted && e.rpId === rp.rpId && ex.has(e.credId));
+        return { rpId: rp.rpId, excluded: hit ? (hit.username || true) : false };
+      } catch { return { rpId: rp.rpId }; }
+    }
+    case 'kv-pk-create': {
+      if (!tab || !isTop(sender)) return { bad: true };
+      const rp = PK.checkRp(sender.url || tab.url, msg.opts?.rp?.id);
+      if (!rp) return { bad: true };
+      const key = await V.getSessionKey();
+      if (!key) return { locked: true };
+      try {
+        const made = await PK.makeCredential(msg.opts, rp);
+        if (made.unsupported) return { unsupported: true };
+        await V.mutate(key, entries => {
+          // Same site and account: the new passkey replaces the old one, as on other platforms.
+          entries.forEach(e => {
+            if (PK.isPasskey(e) && !e.deleted && e.rpId === rp.rpId && e.userHandle && e.userHandle === made.entry.userHandle) { for (const k of Object.keys(e)) if (k !== 'id') delete e[k]; e.deleted = true; e.updated = Date.now(); }
+          });
+          entries.push(made.entry);
+        });
+        await chrome.storage.sync.set({ hasPasskeys: true });
+        return { cred: made.cred };
+      } catch (e) {
+        return e.code === 'QUOTA' ? { full: true } : e.code === 'SYNCING' ? { syncing: true } : { error: true };
+      }
+    }
+    case 'kv-pk-list': {
+      if (!tab || !isTop(sender)) return { bad: true };
+      const opts = msg.opts || {};
+      const rp = PK.checkRp(sender.url || tab.url, opts.rpId);
+      if (!rp) return { bad: true };
+      const key = await V.getSessionKey();
+      if (!key) {
+        const known = await V.checkPasskeySite(rp.rpId);
+        if (known === 'no') return { items: [] };
+        if (known === 'unknown' && !(await chrome.storage.sync.get('hasPasskeys')).hasPasskeys) return { items: [] };
+        return { locked: true };
+      }
+      try {
+        const { entries } = await V.readEntries(key);
+        const allow = new Set((opts.allowCredentials || []).map(c => c.id));
+        return { items: entries.filter(e => PK.isPasskey(e) && !e.deleted && e.rpId === rp.rpId && (!allow.size || allow.has(e.credId)))
+          .sort((a, b) => (b.used || b.updated || 0) - (a.used || a.updated || 0))
+          .map(e => ({ id: e.id, username: e.username || e.displayName || '', title: e.title || '' })) };
+      } catch { return { items: [] }; }
+    }
+    case 'kv-pk-get': {
+      if (!tab || !isTop(sender)) return {};
+      const opts = msg.opts || {};
+      const rp = PK.checkRp(sender.url || tab.url, opts.rpId);
+      if (!rp) return {};
+      const key = await V.getSessionKey();
+      if (!key) return { locked: true };
+      try {
+        const { entries } = await V.readEntries(key);
+        const e = entries.find(x => x.id === msg.entryId && PK.isPasskey(x) && !x.deleted);
+        // Re-check against Chrome's record of the page: the key only signs for its own site.
+        if (!e || e.rpId !== rp.rpId) return {};
+        const allow = (opts.allowCredentials || []).map(c => c.id);
+        if (allow.length && !allow.includes(e.credId)) return {};
+        const cred = await PK.getAssertion(e, opts, rp);
+        V.mutate(key, list => { const x = list.find(y => y.id === e.id); if (x) x.used = Date.now(); }).catch(() => {});
+        return { cred };
       } catch { return {}; }
     }
     case 'kv-unlock': {

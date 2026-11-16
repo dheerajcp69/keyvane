@@ -57,7 +57,7 @@
   <header>
     <div class="brand"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>Keyvane</div>
     <h1>Privacy Policy</h1>
-    <div class="meta">Effective November 16, 2026 · Applies to the Keyvane Chrome extension</div>
+    <div class="meta">Effective November 17, 2026 · Applies to the Keyvane extension for Chrome, Edge and Safari</div>
   </header>
 
   <div class="summary">
@@ -72,6 +72,7 @@
   <section>
     <h2 class="s">What Keyvane stores</h2>
     <p>Keyvane stores the logins you choose to save: website address, an optional name, username or email, password and notes. It also stores your preferences, such as the auto-lock time and password-generator settings.</p>
+    <p>If you save a passkey in Keyvane, it stores the website it belongs to, the account name the site gave it, and the passkey's private key. The private key is created on your device, kept inside the encrypted vault, and never shown, exported in readable form or sent anywhere. When you sign in with it, Keyvane signs the site's challenge on your device and gives the page only that signature.</p>
     <p>All login data is encrypted with AES-256-GCM using a key derived from your master password (PBKDF2-SHA256, 600,000 iterations) before it is written anywhere. Your master password itself is never stored.</p>
   </section>
 
@@ -81,7 +82,7 @@
       <li><b>Chrome sync storage</b> (<code>chrome.storage.sync</code>). If you are signed in to Chrome with sync turned on, Google's Chrome Sync carries the encrypted vault to your other Chrome browsers. Google receives only ciphertext it cannot read. Chrome Sync is governed by <a href="https://policies.google.com/privacy" rel="noopener">Google's Privacy Policy</a>.</li>
       <li><b>Chrome session storage</b> (<code>chrome.storage.session</code>). While the vault is unlocked, the encryption key is kept in memory for this browser session only. It is cleared when you lock the vault, when auto-lock triggers, or when Chrome closes. If you sign in to a site while the vault is locked, the login Keyvane offers to save waits here until you save or dismiss it, and is also cleared when Chrome closes.</li>
     </ul>
-    <p>If Chrome sync is off, the encrypted vault stays on your device only.</p>
+    <p>If Chrome sync is off, the encrypted vault stays on your device only. In Microsoft Edge the same applies with Edge sync and your Microsoft account. In Safari, the encrypted vault is kept in Safari's extension storage on your device.</p>
   </section>
 
   <section>
@@ -96,6 +97,7 @@
       <li><code>activeTab</code>: to read the address of the tab you're on when you open Keyvane, so it can show matching logins. Only after you click the extension.</li>
       <li><code>scripting</code>: to fill a username and password into the current page when you press Fill. Keyvane only fills on the site the login was saved for.</li>
       <li><b>Optional site access</b> (asked only if you turn on "Offer to save passwords"): lets Keyvane show the logins you saved for a site in a small menu when you click its login box, notice when you click into a box for a new password, so it can suggest a strong one, and notice when you submit a login form, so it can offer to save or update that login. It reads the username and password fields only at the moment you sign in, passes them to Keyvane's own background process on your device, and nothing else on the page. You can turn it off in Settings, which also removes the permission.</li>
+      <li><b>Passkeys</b> (part of the same optional site access, and can be turned off separately): a small script lets Keyvane answer a site's request to create or use a passkey. It shows you a Keyvane window first and does nothing unless you choose Keyvane; otherwise your browser or device handles the passkey as usual. The site only ever receives the public key and signatures it asked for.</li>
     </ul>
   </section>
 
@@ -106,7 +108,7 @@
 
   <section>
     <h2 class="s">Sharing and selling</h2>
-    <p>Your data is not sold, shared, transferred to third parties, or used for advertising, creditworthiness or any purpose other than providing the password manager. Keyvane's use of data complies with the Chrome Web Store User Data Policy, including the Limited Use requirements.</p>
+    <p>Your data is not sold, shared, transferred to third parties, or used for advertising, creditworthiness or any purpose other than providing the password manager. Keyvane's use of data complies with the Chrome Web Store User Data Policy, including the Limited Use requirements. No data leaves your device through Keyvane, so it is never available to Apple, Google or Microsoft in readable form either.</p>
   </section>
 
   <section>
@@ -120,7 +122,7 @@
 
   <section>
     <h2 class="s">Changes and contact</h2>
-    <p>If this policy changes, the new version will be posted on this page with a new effective date. For questions, use the support contact on Keyvane's Chrome Web Store listing.</p>
+    <p>If this policy changes, the new version will be posted on this page with a new effective date. For questions, use the support contact on Keyvane's store listing, or open an issue at <a href="https://github.com/dheerajcp69/keyvane/issues" rel="noopener">github.com/dheerajcp69/keyvane</a>.</p>
   </section>
 </div>
 

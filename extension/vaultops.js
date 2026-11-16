@@ -36,12 +36,13 @@ async function sha(salt, s) {
 export async function writeKnown(entries) {
   let { knownSalt } = await session.get('knownSalt');
   if (!knownSalt) { knownSalt = C.b64(C.randomBytes(16)); }
-  const known = {};
+  const known = {}, pkSites = {};
   for (const e of entries) {
-    if (e.deleted || !e.host) continue;
+    if (!e.deleted && e.kind === 'passkey' && e.rpId) pkSites[await sha(knownSalt, 'pk:' + e.rpId)] = 1;
+    if (e.deleted || !e.host || e.kind === 'passkey') continue;
     known[await sha(knownSalt, e.host + '\n' + (e.username || ''))] = await sha(knownSalt, 'pw:' + (e.password || ''));
   }
-  await session.set({ knownSalt, known });
+  await session.set({ knownSalt, known, pkSites });
 }
 
 // 'same' | 'changed' | 'new' | 'unknown' (vault never unlocked this session)
@@ -51,6 +52,13 @@ export async function checkKnown(host, username, password) {
   const k = known[await sha(knownSalt, host + '\n' + (username || ''))];
   if (!k) return 'new';
   return k === (await sha(knownSalt, 'pw:' + password)) ? 'same' : 'changed';
+}
+
+// Whether the vault holds a passkey for a site: 'yes' | 'no' | 'unknown'
+export async function checkPasskeySite(rpId) {
+  const { pkSites, knownSalt } = await session.get(['pkSites', 'knownSalt']);
+  if (!pkSites || !knownSalt) return 'unknown';
+  return pkSites[await sha(knownSalt, 'pk:' + rpId)] ? 'yes' : 'no';
 }
 
 /* ---- unlocked key from the popup's session ---- */
@@ -74,7 +82,7 @@ export async function readEntries(key) {
 }
 
 export function findLogin(entries, host, username) {
-  return entries.find(e => !e.deleted && e.host === host && (e.username || '') === (username || ''));
+  return entries.find(e => !e.deleted && e.kind !== 'passkey' && e.host === host && (e.username || '') === (username || ''));
 }
 
 // Add a new login, or update the password of the same site + username.
@@ -89,6 +97,17 @@ export async function upsertLogin(key, cred) {
   await session.set({ lastActive: now });
   await writeKnown(entries);
   return ex ? 'updated' : 'saved';
+}
+
+// Change the vault from the background worker: read the latest copy, edit, re-encrypt.
+export async function mutate(key, fn) {
+  const { vault, entries } = await readEntries(key);
+  await fn(entries);
+  const now = Date.now();
+  const blob = await C.encryptJSON(key, { entries });
+  await Store.writeVault({ ...vault, ...blob, v: 2, updated: now });
+  await session.set({ lastActive: now });
+  await writeKnown(entries);
 }
 
 /* ---- pending "save this login?" offers ---- */

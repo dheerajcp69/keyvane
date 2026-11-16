@@ -1,8 +1,10 @@
 import * as C from './crypto.js';
 import * as Store from './store.js';
 import * as V from './vaultops.js';
+import { mountLock } from './lock3d.js';
+import { startFx } from './fx.js';
+import { P } from './platform.js';
 
-const REVIEW_URL = 'https://chromewebstore.google.com/detail/occfjinobiaefhbkngbolamflknedmlo/reviews';
 
 const app = document.getElementById('app');
 const toastEl = document.getElementById('toast');
@@ -11,6 +13,9 @@ const UNLOCK_WIN = new URLSearchParams(location.search).has('unlock');
 if (IN_TAB) { document.body.classList.add('in-tab'); document.documentElement.classList.add('in-tab'); }
 
 const session = chrome.storage.session;
+startFx(document.getElementById('fx'));
+let LOCK3D = null;
+function lockScene() { LOCK3D?.destroy(); const c = app.querySelector('.lock3d'); LOCK3D = c ? mountLock(c) : null; }
 
 const S = {
   key: null,
@@ -81,6 +86,7 @@ const I = {
   fill: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m13 3 1.8 4.2L19 9l-4.2 1.8L13 15l-1.8-4.2L7 9l4.2-1.8z"/><path d="M5 17l.9 2.1L8 20l-2.1.9L5 23l-.9-2.1L2 20l2.1-.9z"/></svg>',
   shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.4 8.3 8 9 4.6-.7 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg>',
   trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>',
+  passkey: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M2 21a7 7 0 0 1 11-5.7"/><circle cx="17" cy="13" r="2.6"/><path d="M17 15.6V22l1.6-1.4L17 19"/></svg>',
   note: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12l-4 4H4z"/><path d="M8 9h8M8 13h5"/></svg>'
 };
 
@@ -239,9 +245,10 @@ function renderSetup() {
   <section class="view">
     <div class="top"><div class="brand"><div class="logo">${I.logo}</div>Keyvane</div></div>
     <div class="hero">
-      <div class="hero-mark">${I.logo}</div>
+      <canvas class="lock3d" aria-hidden="true"></canvas>
       <div>
-        <h1>Your passwords.<br><span class="grad">Only on this device.</span></h1>
+        <div class="kicker">Zero-knowledge vault</div>
+        <h1 style="margin-top:6px">Your passwords.<br><span class="grad">Sealed on this device.</span></h1>
         <p style="margin-top:8px">Create a master password to encrypt your vault.</p>
       </div>
       <form id="f" class="field" style="gap:10px" autocomplete="off">
@@ -252,9 +259,10 @@ function renderSetup() {
         <div class="err"></div>
         <button class="btn btn-primary block" id="go">Create vault</button>
       </form>
-      <div class="note">${I.shield}<span>Encrypted with AES-256-GCM, key derived with PBKDF2 (600k rounds). Only the encrypted vault syncs, via your Chrome sign-in. <b>There is no recovery</b> — if you forget it, the vault can't be opened.</span></div>
+      <div class="note">${I.shield}<span>Encrypted with AES-256-GCM, key derived with PBKDF2 (600k rounds). ${P.syncs ? `Only the encrypted vault syncs, via your ${P.account}.` : `The encrypted vault stays on this device; move it with an encrypted backup.`} <b>There is no recovery</b> — if you forget it, the vault can't be opened.</span></div>
     </div>
   </section>`;
+  lockScene();
   const p1 = $('#p1'), p2 = $('#p2'), f = $('#f');
   bindMeter(p1, 'm');
   bindEye($('#eye'), p1);
@@ -264,6 +272,7 @@ function renderSetup() {
     if (p1.value !== p2.value) return fail(f, "Passwords don't match.");
     const go = $('#go'); go.disabled = true; go.textContent = 'Encrypting…';
     await createVault(p1.value);
+    await LOCK3D?.open();
     toast('Vault created');
     if (location.hash === '#enable-save') return renderEnableSave();
     renderList();
@@ -276,9 +285,10 @@ function renderUnlock() {
   <section class="view">
     <div class="top"><div class="brand"><div class="logo">${I.logo}</div>Keyvane</div></div>
     <div class="hero">
-      <div class="hero-mark">${I.lock.replace('currentColor', '#fff')}</div>
+      <canvas class="lock3d" aria-hidden="true"></canvas>
       <div>
-        <h1>Welcome back.</h1>
+        <div class="kicker">Vault sealed</div>
+        <h1 style="margin-top:6px">Welcome <span class="grad">back.</span></h1>
         <p style="margin-top:6px">${S.tabHost ? `Unlock to see logins for <b style="color:var(--text)">${esc(S.tabHost)}</b>.` : 'Unlock your vault to continue.'}</p>
       </div>
       <form id="f" class="field" style="gap:10px">
@@ -289,6 +299,7 @@ function renderUnlock() {
       </form>
     </div>
   </section>`;
+  lockScene();
   const pw = $('#pw'), f = $('#f');
   bindEye($('#eye'), pw);
   f.addEventListener('submit', async e => {
@@ -297,7 +308,9 @@ function renderUnlock() {
     const go = $('#go'); go.disabled = true; go.textContent = 'Unlocking…';
     const ok = await unlockVault(pw.value);
     if (ok === 'syncing') { go.disabled = false; go.innerHTML = `${I.lock} Unlock`; return fail(f, 'Vault is still syncing — try again in a moment.'); }
-    if (!ok) { go.disabled = false; go.innerHTML = `${I.lock} Unlock`; pw.select(); return fail(f, 'Wrong master password.'); }
+    if (!ok) { go.disabled = false; go.innerHTML = `${I.lock} Unlock`; pw.select(); LOCK3D?.shake(); return fail(f, 'Wrong master password.'); }
+    go.textContent = 'Unlocked';
+    await LOCK3D?.open();
     if (UNLOCK_WIN) { toast('Unlocked'); return setTimeout(() => window.close(), 500); }
     if (location.hash === '#settings' || location.hash === '#import') return renderSettings();
     if (location.hash === '#enable-save') return renderEnableSave();
@@ -306,15 +319,29 @@ function renderUnlock() {
 }
 
 /* ---------- view: list ---------- */
-function itemHTML(e, match) {
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function bindTilt(root) {
+  if (REDUCE) return;
+  root.addEventListener('pointermove', ev => {
+    const it = ev.target.closest('.item'); if (!it) return;
+    const r = it.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width, y = (ev.clientY - r.top) / r.height;
+    it.style.setProperty('--mx', `${x * 100}%`); it.style.setProperty('--my', `${y * 100}%`);
+    it.style.transform = `rotateX(${(0.5 - y) * 7}deg) rotateY(${(x - 0.5) * 9}deg) translateZ(4px)`;
+  });
+  root.addEventListener('pointerout', ev => {
+    const it = ev.target.closest('.item'); if (it && !it.contains(ev.relatedTarget)) it.style.transform = '';
+  });
+}
+function itemHTML(e, match, i = 0) {
   const host = e.host || hostOf(e.url) || 'untitled';
-  return `<li class="item ${match ? 'match' : ''}" data-id="${esc(e.id)}">
+  return `<li class="item ${S.stagger ? 'stag' : ''} ${match ? 'match' : ''}" style="--i:${Math.min(i, 12)}" data-id="${esc(e.id)}">
     <div class="avatar" style="--h:${hue(host)}">${esc(host[0] || '?')}</div>
-    <div class="meta"><div class="h">${esc(e.title || host)}</div><div class="u">${esc(e.username || 'No username')}</div></div>
+    <div class="meta"><div class="h">${esc(e.title || host)}${e.kind === 'passkey' ? ' <span class="tag">passkey</span>' : ''}</div><div class="u">${esc(e.username || 'No username')}</div></div>
     <div class="actions">
-      ${match && S.tab ? `<button class="icon-btn sm fill" data-act="fill" title="Fill on this page">${I.fill}</button>` : ''}
+      ${e.kind === 'passkey' ? `<span class="pk-ic" title="Passkey">${I.passkey}</span>` : ''}
+      ${match && S.tab && e.kind !== 'passkey' ? `<button class="icon-btn sm fill" data-act="fill" title="Fill on this page">${I.fill}</button>` : ''}
       ${e.username ? `<button class="icon-btn sm" data-act="cu" title="Copy username">${I.user}</button>` : ''}
-      <button class="icon-btn sm" data-act="cp" title="Copy password">${I.key}</button>
+      ${e.kind === 'passkey' ? '' : `<button class="icon-btn sm" data-act="cp" title="Copy password">${I.key}</button>`}
     </div>
   </li>`;
 }
@@ -346,8 +373,9 @@ function renderList() {
   $('#settings').addEventListener('click', renderSettings);
   $('#add').addEventListener('click', () => renderEditor(null));
   $('#rows').addEventListener('click', onListClick);
+  bindTilt($('#rows'));
   $('#cards').addEventListener('click', onCardClick);
-  drawResults();
+  S.stagger = true; drawResults(); S.stagger = false;
   drawCards();
   if (!S.query) setTimeout(() => $('#q')?.focus(), 50);
 }
@@ -368,14 +396,14 @@ function drawResults() {
   if (S.tabHost && !q) {
     html += `<div class="section-h"><span class="label">This site</span><span class="count">${matches.length}</span></div>`;
     html += matches.length
-      ? `<ul class="list">${matches.map(e => itemHTML(e, true)).join('')}</ul>`
+      ? `<ul class="list">${matches.map((e, i) => itemHTML(e, true, i)).join('')}</ul>`
       : `<div class="empty"><b>No login for ${esc(S.tabHost)}</b>Tap “New login” — the URL is filled in for you.</div>`;
   }
   const rest = S.tabHost && !q ? others : filtered;
   if (rest.length || !S.tabHost || q) {
     html += `<div class="section-h"><span class="label">${q ? 'Results' : S.tabHost ? 'All other logins' : 'All logins'}</span><span class="count">${rest.length}</span></div>`;
     html += rest.length
-      ? `<ul class="list">${rest.map(e => itemHTML(e, siteMatch(e.host, S.tabHost))).join('')}</ul>`
+      ? `<ul class="list">${rest.map((e, i) => itemHTML(e, siteMatch(e.host, S.tabHost), i + 2)).join('')}</ul>`
       : q ? `<div class="empty"><b>No matches</b>Try a different search.</div>`
           : `<div class="empty"><b>Your vault is empty</b>Bring your passwords over from Chrome or another password manager in one step.<button class="btn btn-ghost block" data-act="import" style="margin-top:12px">Import passwords</button></div>`;
   }
@@ -393,6 +421,7 @@ async function onListClick(ev) {
   if (act === 'cu') return copy(e.username, 'Username');
   if (act === 'cp') return copy(e.password, 'Password');
   if (act === 'fill') return fillOnPage(e);
+  if (e.kind === 'passkey') return renderPasskey(e);
   renderEditor(e);
 }
 
@@ -430,7 +459,8 @@ async function fillOnPage(e) {
   if (!S.tab?.id || !siteMatch(e.host, S.tabHost)) return toast('This login is for another site', 'bad');
   try {
     const [res] = await chrome.scripting.executeScript({ target: { tabId: S.tab.id }, func: injectedFill, args: [e.username || '', e.password || ''] });
-    if (res?.result) { toast('Filled'); bumpStat('fills'); if (!IN_TAB) setTimeout(() => window.close(), 450); }
+    // Safari returns the value itself rather than { result }.
+    if (res?.result ?? (typeof res === 'number' ? res : 0)) { toast('Filled'); bumpStat('fills'); if (!IN_TAB) setTimeout(() => window.close(), 450); }
     else toast('No login form found', 'bad');
   } catch { toast("Can't fill on this page", 'bad'); }
 }
@@ -542,6 +572,42 @@ function renderEditor(entry) {
   setTimeout(() => (isNew && !e.url ? $('#url') : $('#user')).focus(), 50);
 }
 
+/* ---------- view: passkey ---------- */
+function renderPasskey(e) {
+  S.view = 'passkey';
+  const when = t => t ? new Date(t).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '—';
+  app.innerHTML = `
+  <section class="view">
+    <div class="top">
+      <button class="icon-btn" id="back" title="Back">${I.back}</button>
+      <div class="title">Passkey</div>
+    </div>
+    <div class="pk-hero">
+      <div class="avatar" style="--h:${hue(e.host)};width:52px;height:52px;border-radius:15px;font-size:22px">${esc(e.host[0] || '?')}</div>
+      <div style="min-width:0"><div class="h">${esc(e.title || e.rpId)}</div><div class="u">${esc(e.username || 'No username')}</div></div>
+    </div>
+    <div class="card">
+      <div class="kv"><span>Website</span><b>${esc(e.rpId)}</b></div>
+      ${e.displayName && e.displayName !== e.username ? `<div class="kv"><span>Name</span><b>${esc(e.displayName)}</b></div>` : ''}
+      <div class="kv"><span>Created</span><b>${when(e.created)}</b></div>
+      <div class="kv"><span>Last used</span><b>${when(e.used)}</b></div>
+      <div class="kv"><span>Key</span><b>ECDSA P-256 · sealed in your vault</b></div>
+    </div>
+    <div class="note">${I.shield}<span>Sign in to ${esc(e.rpId)} with “Sign in with a passkey” and Keyvane will offer this one. The private key never leaves your encrypted vault and is never shown.</span></div>
+    <div class="spacer"></div>
+    <button class="btn btn-danger block" id="del">${I.trash} Delete passkey</button>
+  </section>`;
+  $('#back').addEventListener('click', renderList);
+  const del = $('#del'); let armed = false;
+  del.addEventListener('click', async () => {
+    if (!armed) { armed = true; del.classList.add('armed'); del.textContent = `Confirm — you may lose access to ${e.rpId}`; setTimeout(() => { if (del.isConnected) { armed = false; del.classList.remove('armed'); del.innerHTML = `${I.trash} Delete passkey`; } }, 4000); return; }
+    S.entries = S.entries.map(x => (x.id === e.id ? { id: x.id, deleted: true, updated: Date.now() } : x));
+    try { await persist(); } catch { return; }
+    toast('Passkey deleted');
+    renderList();
+  });
+}
+
 /* ---------- cards on the list view ---------- */
 async function bumpStat(k) {
   const stats = (await Store.getSetting('stats', {})) || {};
@@ -565,7 +631,7 @@ async function drawCards() {
     </div>`;
   }
   const uses = (stats.fills || 0) + (stats.saves || 0);
-  if (!pending.length && uses >= 10 && !stats.reviewed && Date.now() > (stats.reviewLater || 0)) {
+  if (!pending.length && P.reviewUrl && uses >= 10 && !stats.reviewed && Date.now() > (stats.reviewLater || 0)) {
     html += `<div class="promo">
       <div class="meta"><div class="h">Enjoying Keyvane?</div><div class="u">A quick rating helps other people find it.</div></div>
       <button class="btn btn-primary sm" data-card="rate">Rate ★</button>
@@ -603,7 +669,7 @@ async function onCardClick(ev) {
     return;
   }
   const stats = (await Store.getSetting('stats', {})) || {};
-  if (act === 'rate') { await Store.setSetting('stats', { ...stats, reviewed: true }); chrome.tabs.create({ url: REVIEW_URL }); }
+  if (act === 'rate') { await Store.setSetting('stats', { ...stats, reviewed: true }); chrome.tabs.create({ url: P.reviewUrl }); }
   if (act === 'later') await Store.setSetting('stats', { ...stats, reviewLater: Date.now() + 14 * 864e5, fills: 0, saves: 0 });
   if (act === 'enable') return openEnableSave();
   if (act === 'tipx') { const tips = await Store.getSetting('tips', {}); await Store.setSetting('tips', { ...tips, offerDismissed: true }); }
@@ -633,7 +699,7 @@ function renderEnableSave() {
         <h1>Save logins <span class="grad">as you sign in.</span></h1>
         <p style="margin-top:8px">When you log in, Keyvane shows a small “Save login?” card. When you create an account, it suggests a strong password and fills it in for you.</p>
       </div>
-      <div class="note">${I.shield}<span>Chrome will ask to let Keyvane “read and change data on websites”. Keyvane only looks at password boxes and login forms, never sends anything anywhere, and you can turn this off in Settings at any time.</span></div>
+      <div class="note">${I.shield}<span>${P.name} will ask to let Keyvane “read and change data on websites”. Keyvane only looks at password boxes and login forms, never sends anything anywhere, and you can turn this off in Settings at any time.</span></div>
       <button class="btn btn-primary block" id="allow">Allow and turn on</button>
       <button class="btn btn-ghost block" id="skip">Not now</button>
     </div>
@@ -662,12 +728,22 @@ function bindOfferSwitch() {
     row.innerHTML = `Never offered on ${list.length} site${list.length > 1 ? 's' : ''}. <a href="#" id="neverClear" style="color:var(--accent-2)">Reset</a>`;
     $('#neverClear').addEventListener('click', async e => { e.preventDefault(); await Store.setSetting('neverSave', []); row.classList.add('hidden'); toast('Reset'); });
   });
+  const pk = $('#pkSw');
+  const paintPk = async () => { const on = (await offerEnabled()) && S.settings.passkeys !== false; pk.setAttribute('aria-checked', String(on)); pk.classList.toggle('on', on); };
+  paintPk();
+  pk.addEventListener('click', async () => {
+    if (!(await offerEnabled())) { S.settings.passkeys = true; await Store.setSetting('settings', S.settings); return openEnableSave(); }
+    S.settings.passkeys = S.settings.passkeys === false;
+    await Store.setSetting('settings', S.settings);
+    paintPk();
+    toast(S.settings.passkeys ? 'Passkeys on — reload open tabs' : 'Passkeys turned off');
+  });
   sw.addEventListener('click', async () => {
     if (sw.getAttribute('aria-checked') === 'true') {
       S.settings.offerSave = false;
       await Store.setSetting('settings', S.settings);
       try { await chrome.permissions.remove({ origins: ['<all_urls>'] }); } catch {}
-      paint(false);
+      paint(false); paintPk();
       toast('Save and suggest turned off');
     } else openEnableSave();
   });
@@ -693,7 +769,7 @@ function bindCsvImport() {
     if (!file) return;
     const { logins, skipped, error } = V.csvToLogins(await file.text());
     if (error) { out.innerHTML = `<p class="err" style="margin-top:4px">${esc(error)}</p>`; return; }
-    const have = new Set(live().map(e => `${e.host}\n${e.username || ''}\n${e.password}`));
+    const have = new Set(live().filter(e => e.kind !== 'passkey').map(e => `${e.host}\n${e.username || ''}\n${e.password}`));
     const fresh = [], seen = new Set();
     for (const l of logins) {
       const k = `${l.host}\n${l.username}\n${l.password}`;
@@ -723,7 +799,8 @@ function bindCsvImport() {
 /* ---------- view: settings ---------- */
 function renderSettings() {
   S.view = 'settings';
-  const entries = live();
+  const entries = live().filter(e => e.kind !== 'passkey');
+  const nPasskeys = live().length - entries.length;
   const weak = entries.filter(e => C.strength(e.password).score < 2).length;
   const counts = {};
   entries.forEach(e => (counts[e.password] = (counts[e.password] || 0) + 1));
@@ -737,6 +814,7 @@ function renderSettings() {
     <div class="scroll" style="padding-bottom:18px;max-height:500px">
       <div class="stat">
         <div><b>${entries.length}</b><span>Logins</span></div>
+        <div><b>${nPasskeys}</b><span>Passkeys</span></div>
         <div><b style="color:${weak ? '#fbbf24' : 'var(--ok)'}">${weak}</b><span>Weak</span></div>
         <div><b style="color:${reused ? 'var(--danger)' : 'var(--ok)'}">${reused}</b><span>Reused</span></div>
       </div>
@@ -745,6 +823,8 @@ function renderSettings() {
         <div class="set-row"><div><h3>Save and suggest passwords</h3><p>Keyvane shows your saved logins when you click a login box, offers to save new ones, and suggests strong passwords on sign-up pages.</p></div>
           <button class="switch" id="offer" role="switch" aria-checked="false"><i></i></button></div>
         <p id="neverRow" class="hidden" style="font-size:11.5px"></p>
+        <div class="set-row" style="border-top:1px solid var(--border);padding-top:10px"><div><h3>Passkeys</h3><p>Save and use passkeys in Keyvane when a site offers “Sign in with a passkey”. You can always choose another device instead.</p></div>
+          <button class="switch" id="pkSw" role="switch" aria-checked="false"><i></i></button></div>
       </div>
 
       <div class="card">
@@ -756,14 +836,14 @@ function renderSettings() {
       </div>
 
       <div class="card">
-        <div class="set-row"><div><h3>Sync</h3><p>Your encrypted vault follows your Chrome sign-in to every computer where you install Keyvane. Google only ever sees ciphertext.</p></div></div>
+        <div class="set-row"><div><h3>Sync</h3><p>${P.syncs ? `Your encrypted vault follows your ${P.account} to every computer where you install Keyvane. ${P.id === 'edge' ? 'Microsoft' : 'Google'} only ever sees ciphertext.` : 'Your encrypted vault is stored in Safari on this device. To move it, export an encrypted backup below and import it on the other device.'}</p></div></div>
         <div class="meter-label"><span>Storage used</span><span id="use">…</span></div>
         <div class="usebar"><i id="usebar"></i></div>
-        <p style="font-size:11px">Needs Chrome sync on (Settings → You and Google → Sync → Extensions). Without it, the vault stays on this device only.</p>
+        ${P.id === 'chrome' ? '<p style="font-size:11px">Needs Chrome sync on (Settings → You and Google → Sync → Extensions). Without it, the vault stays on this device only.</p>' : P.id === 'edge' ? '<p style="font-size:11px">Needs Edge sync on (Settings → Profiles → Sync → Extensions). Without it, the vault stays on this device only.</p>' : ''}
       </div>
 
       <div class="card">
-        <div class="set-row"><div><h3>Auto-lock</h3><p>Lock after inactivity. Always locks when Chrome closes.</p></div>
+        <div class="set-row"><div><h3>Auto-lock</h3><p>Lock after inactivity. Always locks when ${P.name} closes.</p></div>
           <select id="al" style="width:auto">
             ${[[1, '1 min'], [5, '5 min'], [15, '15 min'], [30, '30 min'], [60, '1 hour'], [0, 'Browser close']].map(([v, l]) => `<option value="${v}" ${S.settings.autoLock === v ? 'selected' : ''}>${l}</option>`).join('')}
           </select></div>
@@ -794,7 +874,7 @@ function renderSettings() {
         <p>Permanently erase the vault from this browser.</p>
         <button class="btn btn-danger block" id="wipe">Erase vault</button>
       </div>
-      <p style="text-align:center;color:var(--faint);font-size:11px">Keyvane 1.4 · end-to-end encrypted · free</p>
+      <p style="text-align:center;color:var(--faint);font-size:11px">Keyvane 1.5 · end-to-end encrypted · free</p>
     </div>
   </section>`;
 
