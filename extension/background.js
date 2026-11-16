@@ -102,6 +102,44 @@ async function handle(msg, sender) {
         return { result: e.code === 'QUOTA' ? 'full' : e.code === 'SYNCING' ? 'syncing' : 'error' };
       }
     }
+    case 'kv-logins?': {
+      // Only the top frame, and only logins for the page's own site.
+      if (!tab || sender.frameId !== 0) return {};
+      const host = V.hostOf(sender.url || tab.url);
+      if (!host) return {};
+      const key = await V.getSessionKey();
+      if (!key) return { locked: true };
+      try {
+        const { entries } = await V.readEntries(key);
+        return { logins: entries.filter(e => !e.deleted && V.siteMatch(e.host, host))
+          .sort((x, y) => (y.updated || 0) - (x.updated || 0))
+          .map(e => ({ id: e.id, username: e.username || '', title: e.title || e.host })) };
+      } catch { return {}; }
+    }
+    case 'kv-fill': {
+      if (!tab || sender.frameId !== 0) return {};
+      const key = await V.getSessionKey();
+      if (!key) return { locked: true };
+      try {
+        const { entries } = await V.readEntries(key);
+        const e = entries.find(x => x.id === msg.id && !x.deleted);
+        // Re-check the site here, from Chrome's own record of the page, never the page's word.
+        if (!e || !V.siteMatch(e.host, V.hostOf(sender.url || tab.url))) return {};
+        await chrome.storage.session.set({ lastActive: Date.now() });
+        const { stats = {} } = await chrome.storage.sync.get('stats');
+        await chrome.storage.sync.set({ stats: { ...stats, fills: (stats.fills || 0) + 1 } });
+        return { username: e.username || '', password: e.password };
+      } catch { return {}; }
+    }
+    case 'kv-unlock': {
+      if (!tab) return {};
+      await chrome.storage.session.set({ unlockTab: tab.id });
+      try { await chrome.action.openPopup({ windowId: tab.windowId }); return { opened: 'popup' }; }
+      catch {
+        await chrome.windows.create({ url: chrome.runtime.getURL('popup.html?unlock=1'), type: 'popup', width: 400, height: 640, focused: true });
+        return { opened: 'window' };
+      }
+    }
     case 'kv-dismiss':
     case 'kv-never': {
       const list = await V.getPending();
@@ -121,6 +159,15 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
   if (!msg?.type?.startsWith('kv-') || sender.id !== chrome.runtime.id) return false;
   handle(msg, sender).then(reply, () => reply({}));
   return true;
+});
+
+// After the user unlocks from a page's login menu, reopen the menu on that page.
+chrome.storage.onChanged.addListener(async (ch, area) => {
+  if (area !== 'session' || !ch.key?.newValue) return;
+  const { unlockTab } = await chrome.storage.session.get('unlockTab');
+  if (unlockTab == null) return;
+  await chrome.storage.session.remove('unlockTab');
+  chrome.tabs.sendMessage(unlockTab, { type: 'kv-unlocked' }).catch(() => {});
 });
 
 chrome.tabs.onRemoved.addListener(async tabId => {

@@ -10,7 +10,8 @@
 
 - **Suggests strong passwords** in sign-up and change-password forms, and fills the confirm box too (opt-in).
 - **Saves logins as you sign in** (opt-in), and offers to update them when a password changes. Handles single-page apps and two-step logins.
-- **One-click fill**, only on the site a login belongs to.
+- **Login menu**: click a login box and your saved logins for that site appear under it; one click fills both fields (opt-in).
+- **One-click fill** from the popup too, only on the site a login belongs to.
 - **Password generator** with a strength meter, plus weak and reused password counts.
 - **Syncs through your Chrome sign-in** (`chrome.storage.sync`). Edits on two computers merge instead of overwriting.
 - **Imports CSV** exports from Chrome, Edge, Brave, Firefox, Safari, Bitwarden, LastPass, 1Password, Dashlane and Proton Pass.

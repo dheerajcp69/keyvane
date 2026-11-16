@@ -150,6 +150,136 @@
     document.documentElement.appendChild(chip);
   }
 
+  /* ---------- login menu: saved logins under the login box ---------- */
+  const scopeOf = el => el.form || document;
+  const loginPassword = scope => [...scope.querySelectorAll('input[type=password]')].find(f => !isNewPassword(f) && !f.disabled);
+  // A box worth offering saved logins for: a login password box, or a username box next to one
+  // (or marked as a username, for two-step logins).
+  function isLoginField(el) {
+    if (!(el instanceof HTMLInputElement) || el.disabled || el.readOnly) return false;
+    if (el.type === 'password') return !isNewPassword(el);
+    if (!userLike(el)) return false;
+    const pw = [...scopeOf(el).querySelectorAll('input[type=password]')];
+    if (pw.length) return pw.some(f => !isNewPassword(f));
+    return /username|email/i.test(el.autocomplete || '') || !!el.form;
+  }
+
+  function fillLogin(el, cred) {
+    const scope = scopeOf(el);
+    const pw = el.type === 'password' ? el : loginPassword(scope);
+    let user = el.type !== 'password' ? el : null;
+    if (!user) {
+      const inputs = [...scope.querySelectorAll('input')];
+      const before = inputs.slice(0, inputs.indexOf(pw)).reverse().filter(i => TEXTY.includes((i.getAttribute('type') || '').toLowerCase()) && !i.disabled && !i.readOnly);
+      user = before.find(userLike) || before[0] || null;
+    }
+    if (user && cred.username) setVal(user, cred.username);
+    if (pw && cred.password) setVal(pw, cred.password);
+    (pw || user)?.focus();
+  }
+
+  let menu = null, menuFor = null, menuItems = [], menuIdx = -1, menuReq = 0;
+  const hideMenu = () => { document.querySelectorAll('keyvane-menu').forEach(n => n.remove()); menu = null; menuFor = null; menuItems = []; menuIdx = -1; };
+  const closedFor = new WeakSet();
+
+  async function showMenu(el, force) {
+    if (!force && menuFor === el) return;
+    hideMenu();
+    menuFor = el;
+    const req = ++menuReq;
+    const r = (await send({ type: 'kv-logins?' })) || {};
+    if (req !== menuReq || menuFor !== el || document.activeElement !== el) return;
+    if (!r.locked && !(r.logins || []).length) { menuFor = null; return; }
+    hideChip();
+    const box = el.getBoundingClientRect();
+    menu = document.createElement('keyvane-menu');
+    const rows = r.locked ? 1 : Math.min(r.logins.length, 4);
+    const est = 22 + rows * 46;
+    const top = box.bottom + est + 8 > innerHeight && box.top - est - 6 > 0 ? box.top - est - 6 : box.bottom + 6;
+    menu.style.cssText = `all:initial;position:fixed;z-index:2147483647;left:${Math.max(8, Math.min(box.left, innerWidth - 316))}px;top:${Math.max(8, top)}px;`;
+    const root = menu.attachShadow({ mode: 'closed' });
+    root.innerHTML = `
+      <style>
+        .w{font:13px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;color:#eef0f7;width:300px;box-sizing:border-box;
+           background:rgba(12,13,20,.97);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:5px;
+           box-shadow:0 18px 40px -12px rgba(0,0,0,.6),0 0 0 1px rgba(139,92,246,.25);animation:in .16s ease-out}
+        @keyframes in{from{opacity:0;transform:translateY(-4px)}}
+        .hd{display:flex;align-items:center;gap:7px;padding:4px 7px 6px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#8b90a6}
+        .lg{width:16px;height:16px;border-radius:5px;display:grid;place-items:center;background:linear-gradient(135deg,#8b5cf6,#22d3ee)}
+        .x{margin-left:auto;background:none;border:0;color:#8b90a6;font-size:15px;line-height:1;cursor:pointer;padding:0 3px;border-radius:5px}
+        .x:hover{color:#fff}
+        .list{max-height:190px;overflow-y:auto;display:grid;gap:2px}
+        .it{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:inherit;color:inherit;background:none;border:0;border-radius:9px;padding:7px 8px;cursor:pointer}
+        .it:hover,.it.on{background:rgba(139,92,246,.2)}
+        .av{width:28px;height:28px;border-radius:8px;flex:none;display:grid;place-items:center;font-weight:700;font-size:12.5px;color:#fff;text-transform:uppercase}
+        .m{min-width:0;display:grid}
+        .m b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .m span{font-size:12px;color:#9a9fb5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      </style>
+      <div class="w" role="listbox" aria-label="Keyvane saved logins">
+        <div class="hd"><span class="lg"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>Keyvane<button class="x" type="button" title="Close" aria-label="Close">×</button></div>
+        <div class="list"></div>
+      </div>`;
+    const list = root.querySelector('.list');
+    const keep = e => e.preventDefault();
+    root.querySelector('.x').addEventListener('mousedown', keep);
+    root.querySelector('.x').addEventListener('click', () => { closedFor.add(el); hideMenu(); });
+    const item = (avatar, hue, title, sub, onPick) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'it'; b.setAttribute('role', 'option');
+      b.innerHTML = `<span class="av"></span><span class="m"><b></b><span></span></span>`;
+      const av = b.querySelector('.av'); av.textContent = avatar;
+      av.style.background = hue == null ? 'linear-gradient(135deg,#8b5cf6,#22d3ee)' : `linear-gradient(135deg,hsl(${hue} 75% 60%),hsl(${hue + 45} 80% 48%))`;
+      b.querySelector('b').textContent = title; b.querySelector('.m span').textContent = sub;
+      b.addEventListener('mousedown', keep);
+      b.addEventListener('click', onPick);
+      list.appendChild(b);
+      menuItems.push(b);
+    };
+    if (r.locked) {
+      item('🔒', null, 'Unlock Keyvane', 'to fill your saved login', async () => { hideMenu(); await send({ type: 'kv-unlock' }); });
+    } else {
+      const hue = s => { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
+      for (const l of r.logins) {
+        const name = l.username || '(no username)';
+        item((l.title || '?')[0], hue(l.title || ''), name, l.title, async () => {
+          hideMenu();
+          const c = (await send({ type: 'kv-fill', id: l.id })) || {};
+          if (c.locked) return showMenu(el, true);
+          if (c.password != null) fillLogin(el, c);
+        });
+      }
+    }
+    document.documentElement.appendChild(menu);
+  }
+
+  const maybeMenu = t => { if (!closedFor.has(t) && isLoginField(t) && !(t.type === 'password' && t.value)) showMenu(t); };
+  document.addEventListener('focusin', e => maybeMenu(e.target), true);
+  document.addEventListener('click', e => { if (e.target === document.activeElement && e.target !== menuFor) maybeMenu(e.target); }, true);
+  document.addEventListener('focusout', e => { if (e.target === menuFor) setTimeout(() => { if (document.activeElement !== menuFor) hideMenu(); }, 150); }, true);
+  document.addEventListener('input', e => { if (e.target === menuFor && e.target.type === 'password' && e.target.value) hideMenu(); }, true);
+  document.addEventListener('keydown', e => {
+    if (!menu || e.target !== menuFor) return;
+    const n = menuItems.length;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      menuIdx = (menuIdx + (e.key === 'ArrowDown' ? 1 : -1) + n) % n;
+      menuItems.forEach((b, i) => b.classList.toggle('on', i === menuIdx));
+      menuItems[menuIdx].scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'Enter' && menuIdx >= 0) {
+      e.preventDefault(); e.stopPropagation(); menuItems[menuIdx].click();
+    } else if (e.key === 'Escape') {
+      closedFor.add(menuFor); hideMenu();
+    }
+  }, true);
+  addEventListener('scroll', () => menu && hideMenu(), true);
+  addEventListener('resize', () => menu && hideMenu());
+  chrome.runtime.onMessage.addListener(m => {
+    if (m?.type === 'kv-unlocked' && document.activeElement && isLoginField(document.activeElement)) {
+      closedFor.delete(document.activeElement); showMenu(document.activeElement, true);
+    }
+  });
+
   const maybeSuggest = t => { if (isNewPassword(t) && !t.value && !dismissed.has(t)) showChip(t); };
   document.addEventListener('focusin', e => maybeSuggest(e.target), true);
   document.addEventListener('click', e => { if (e.target === document.activeElement) maybeSuggest(e.target); }, true);

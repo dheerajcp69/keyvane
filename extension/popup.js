@@ -7,6 +7,7 @@ const REVIEW_URL = 'https://chromewebstore.google.com/detail/occfjinobiaefhbkngb
 const app = document.getElementById('app');
 const toastEl = document.getElementById('toast');
 const IN_TAB = new URLSearchParams(location.search).has('tab');
+const UNLOCK_WIN = new URLSearchParams(location.search).has('unlock');
 if (IN_TAB) { document.body.classList.add('in-tab'); document.documentElement.classList.add('in-tab'); }
 
 const session = chrome.storage.session;
@@ -297,6 +298,7 @@ function renderUnlock() {
     const ok = await unlockVault(pw.value);
     if (ok === 'syncing') { go.disabled = false; go.innerHTML = `${I.lock} Unlock`; return fail(f, 'Vault is still syncing — try again in a moment.'); }
     if (!ok) { go.disabled = false; go.innerHTML = `${I.lock} Unlock`; pw.select(); return fail(f, 'Wrong master password.'); }
+    if (UNLOCK_WIN) { toast('Unlocked'); return setTimeout(() => window.close(), 500); }
     if (location.hash === '#settings' || location.hash === '#import') return renderSettings();
     if (location.hash === '#enable-save') return renderEnableSave();
     renderList();
@@ -740,7 +742,7 @@ function renderSettings() {
       </div>
 
       <div class="card">
-        <div class="set-row"><div><h3>Save and suggest passwords</h3><p>Keyvane offers to save logins when you sign in, and suggests a strong password when you create an account.</p></div>
+        <div class="set-row"><div><h3>Save and suggest passwords</h3><p>Keyvane shows your saved logins when you click a login box, offers to save new ones, and suggests strong passwords on sign-up pages.</p></div>
           <button class="switch" id="offer" role="switch" aria-checked="false"><i></i></button></div>
         <p id="neverRow" class="hidden" style="font-size:11.5px"></p>
       </div>
