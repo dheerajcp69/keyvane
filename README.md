@@ -8,6 +8,7 @@
 
 ## What it does
 
+- **Suggests strong passwords** in sign-up and change-password forms, and fills the confirm box too (opt-in).
 - **Saves logins as you sign in** (opt-in), and offers to update them when a password changes. Handles single-page apps and two-step logins.
 - **One-click fill**, only on the site a login belongs to.
 - **Password generator** with a strength meter, plus weak and reused password counts.
