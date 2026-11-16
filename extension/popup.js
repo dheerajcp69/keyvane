@@ -794,7 +794,7 @@ function renderSettings() {
         <p>Permanently erase the vault from this browser.</p>
         <button class="btn btn-danger block" id="wipe">Erase vault</button>
       </div>
-      <p style="text-align:center;color:var(--faint);font-size:11px">Keyvane 1.3 · end-to-end encrypted · free</p>
+      <p style="text-align:center;color:var(--faint);font-size:11px">Keyvane 1.4 · end-to-end encrypted · free</p>
     </div>
   </section>`;
 

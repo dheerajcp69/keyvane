@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Keyvane – Free Password Manager & Generator",
   "short_name": "Keyvane",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Free, end-to-end encrypted password manager. Suggests strong passwords, saves logins as you sign in, syncs with Chrome.",
   "action": {
     "default_popup": "popup.html",
