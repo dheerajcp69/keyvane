@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Keyvane Pitch Deck</title>
+<meta name="description" content="Keyvane: a free, open-source, end-to-end encrypted password manager for Chrome.">
+<meta name="theme-color" content="#0A0B12">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%238b5cf6'/%3E%3Cstop offset='1' stop-color='%2322d3ee'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round'%3E%3Crect x='9' y='14' width='14' height='10' rx='2.5'/%3E%3Cpath d='M12 14v-3a4 4 0 0 1 8 0v3'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@400;600;700&display=swap">
+<style>
+*{margin:0;box-sizing:border-box}
+html,body{height:100%;background:#05060A;overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:0 0}
+#stage>section{position:absolute;inset:0;width:1920px;height:1080px;overflow:hidden;display:none}
+#stage>section.on{display:block}
+#stage>section:not(.on) .rise{animation:none}
+.embed{background:transparent}
+p,h1,h2,h3{margin:0}
+:root{--ink:#0A0B12;--ink2:#11131D;--fg:#EEF0F7;--muted:#A3A8BD;--violet:#8B5CF6;--cyan:#22D3EE;--line:#2A2E40;}
+body{font-family:'Inter',Arial,sans-serif;color:var(--fg);}
+section{padding:128px;box-sizing:border-box;color:var(--fg);counter-increment:page;}
+section.dark{background:var(--ink);}
+section.dark2{background:var(--ink2);}
+section.accent{background:linear-gradient(135deg,#6D28D9,#0E7490);}
+section.foot-pad{padding:128px 128px 160px;}
+h1,h2,h3{font-family:'Space Grotesk',Arial,sans-serif;color:var(--fg);}
+.h-xl{font-size:120px;font-weight:700;line-height:1.02;letter-spacing:-3px;}
+.h-l{font-size:72px;font-weight:700;line-height:1.08;letter-spacing:-1.5px;margin-top:16px;}
+.h-s{font-size:44px;font-weight:600;line-height:1.1;letter-spacing:-0.5px;}
+.h-xs{font-size:32px;font-weight:600;line-height:1.2;}
+.lede{font-size:32px;line-height:1.45;color:var(--muted);margin-top:40px;width:820px;}
+.lede-lt{font-size:44px;line-height:1.35;color:#EDE9FE;margin-top:48px;width:1300px;}
+.body{font-size:24px;line-height:1.5;color:var(--muted);margin-top:12px;}
+.body-s{font-size:24px;line-height:1.4;color:var(--muted);margin-top:8px;}
+.eyebrow{font-size:24px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--cyan);}
+.eyebrow-dk{font-size:24px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:#CFFAFE;}
+.grad-t{color:#67E8F9;}
+.source{font-size:24px;color:#7D8299;margin-top:48px;}
+.foot{position:absolute;left:128px;bottom:64px;width:600px;font-size:24px;color:#6B7088;}
+.pg{position:absolute;right:128px;bottom:64px;width:120px;text-align:right;font-size:24px;color:#6B7088;font-variant-numeric:tabular-nums;}
+
+.blob{position:absolute;border-radius:50%;}
+.b1{left:0px;top:0px;width:1000px;height:1000px;background:radial-gradient(circle,rgba(124,58,237,0.42),rgba(124,58,237,0) 70%);}
+.b2{left:920px;top:80px;width:1000px;height:1000px;background:radial-gradient(circle,rgba(8,145,178,0.38),rgba(8,145,178,0) 70%);}
+.b3{left:1050px;top:120px;width:820px;height:820px;background:radial-gradient(circle,rgba(124,58,237,0.30),rgba(124,58,237,0) 70%);}
+
+.col-l{display:flex;flex-direction:column;width:960px;}
+.col-l .h-xl{font-size:104px;}
+.brand{display:flex;align-items:center;gap:20px;margin-bottom:48px;}
+.mark{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#8B5CF6,#22D3EE);display:flex;align-items:center;justify-content:center;}
+.mark-i{color:#FBFAFF;width:38px;height:38px;}
+.brand-t{font-family:'Space Grotesk',Arial,sans-serif;font-size:44px;font-weight:700;}
+.pills{display:flex;gap:16px;margin-top:48px;flex-wrap:wrap;}
+.pill{font-size:24px;padding:10px 22px;border-radius:999px;border:2px solid #3A3F56;color:#D6D9E6;background:#151826;}
+
+.cards3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px;margin-top:72px;}
+.cards4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:28px;margin-top:72px;}
+.card{background:#171A27;border:2px solid #262A3B;border-radius:28px;padding:44px 40px;}
+.c-ic{color:#A78BFA;width:48px;height:48px;margin-bottom:28px;}
+
+.stmt{display:flex;flex-direction:column;justify-content:center;height:824px;}
+
+.shots{display:flex;gap:72px;margin-top:56px;justify-content:center;}
+.shot{display:flex;flex-direction:column;align-items:center;gap:20px;}
+.pop{width:362px;height:560px;object-fit:cover;border-radius:28px;box-shadow:0 30px 80px rgba(76,29,149,0.55);}
+.cap{font-size:24px;color:var(--muted);}
+
+.split{display:flex;gap:72px;margin-top:56px;align-items:center;}
+.browser{width:944px;height:593px;object-fit:contain;border-radius:20px;box-shadow:0 30px 90px rgba(8,145,178,0.35);}
+.feats{display:flex;flex-direction:column;gap:40px;width:640px;}
+.feat{border-left:4px solid var(--violet);padding-left:28px;}
+
+.narrow{width:900px;}
+.steps{display:flex;flex-direction:column;gap:30px;margin-top:56px;width:880px;}
+.step{display:flex;gap:28px;align-items:flex-start;}
+.num{font-family:'Space Grotesk',Arial,sans-serif;font-size:32px;font-weight:700;color:var(--cyan);width:56px;}
+
+.cmp{font-family:'Inter',Arial,sans-serif;font-size:32px;color:var(--fg);width:1664px;margin-top:64px;}
+.cmp tr{background:#151826;}
+.cmp td,.cmp th{padding:22px 28px;}
+.cmp .kv{color:#67E8F9;}
+
+.tl{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:24px;margin-top:120px;}
+.ms{display:flex;flex-direction:column;border-top:6px solid #7C3AED;padding-top:32px;}
+.ms.now{border-top:6px solid #22D3EE;}
+.date{font-size:24px;font-weight:600;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
+
+.links{display:flex;flex-direction:column;gap:24px;margin-top:64px;}
+.link{display:flex;align-items:center;gap:20px;font-size:32px;color:#D6D9E6;}
+.l-ic{color:#67E8F9;width:36px;height:36px;}
+.thanks{font-size:32px;color:var(--muted);margin-top:72px;}
+
+@keyframes rise{from{opacity:0;transform:translateY(36px);}to{opacity:1;transform:translateY(0);}}
+.rise{animation:rise 800ms cubic-bezier(0.2,0.8,0.2,1) both;animation-delay:calc(var(--i,0) * 110ms);}
+
+.c-ic,.mark-i,.l-ic{display:block}
+.cmp{border-collapse:separate;border-spacing:0 6px;text-align:left}
+.cmp th{font-family:'Space Grotesk',Arial,sans-serif;font-weight:600;color:#EEF0F7}
+.cmp th:first-child,.cmp td:first-child{border-radius:12px 0 0 12px}
+.cmp th:last-child,.cmp td:last-child{border-radius:0 12px 12px 0}
+.cmp tr{background:transparent}
+.cmp td,.cmp th{background:#151826}
+#ui{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:10px;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  font:500 14px/1 Inter,system-ui,sans-serif;color:#C9CCDA;opacity:0;transition:opacity .3s;z-index:5;background:linear-gradient(transparent,rgba(5,6,10,.85))}
+body.ui #ui,#ui:focus-within{opacity:1}
+#ui button{font:inherit;color:inherit;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:10px;height:36px;min-width:36px;padding:0 12px;cursor:pointer}
+#ui button:hover{background:rgba(255,255,255,.16)}
+#ui button:focus-visible{outline:2px solid #22D3EE;outline-offset:2px}
+#count{font-variant-numeric:tabular-nums;min-width:56px;text-align:center}
+#bar{flex:1;height:4px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden}
+#bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8B5CF6,#22D3EE);transition:width .3s}
+#ui a{color:#67E8F9;text-decoration:none;white-space:nowrap}
+@media (max-width:560px){#ui a{display:none}}
+@media (prefers-reduced-motion:reduce){.rise{animation:none!important}}
+</style>
+</head>
+<body class="ui">
+<main id="stage" aria-live="polite">
+<section aria-roledescription="slide" aria-label="1 of 11" id="cover" class="dark">
+<div class="blob b1"></div><div class="blob b2"></div>
+<iframe class="embed" style="position:absolute;left:1000px;top:110px;width:820px;height:860px;border:0" title="3D animation" aria-hidden="true" tabindex="-1" srcdoc="&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;style&gt;html,body{margin:0;height:100%;background:transparent;overflow:hidden}canvas{width:100%;height:100%;display:block}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;canvas id=&quot;c&quot;&gt;&lt;/canvas&gt;&lt;script&gt;window.SCENE=&quot;lock&quot;;(function(){
+var S=window.SCENE,c=document.getElementById(&#x27;c&#x27;),g=c.getContext(&#x27;2d&#x27;);
+var W=1,H=1,R=Math.min(2,window.devicePixelRatio||1);
+function fit(){W=c.clientWidth||innerWidth;H=c.clientHeight||innerHeight;c.width=Math.round(W*R);c.height=Math.round(H*R);g.setTransform(R,0,0,R,0,0);}
+addEventListener(&#x27;resize&#x27;,fit);fit();
+var A=[139,92,246],B=[34,211,238],N=24,spr=[];
+for(var i=0;i&lt;N;i++){var t=i/(N-1),col=[0,1,2].map(function(k){return Math.round(A[k]+(B[k]-A[k])*t)}).join(&#x27;,&#x27;);
+ var s=document.createElement(&#x27;canvas&#x27;);s.width=s.height=32;var q=s.getContext(&#x27;2d&#x27;),gr=q.createRadialGradient(16,16,0,16,16,16);
+ gr.addColorStop(0,&#x27;rgba(255,255,255,1)&#x27;);gr.addColorStop(.16,&#x27;rgba(&#x27;+col+&#x27;,.95)&#x27;);gr.addColorStop(.48,&#x27;rgba(&#x27;+col+&#x27;,.26)&#x27;);gr.addColorStop(1,&#x27;rgba(&#x27;+col+&#x27;,0)&#x27;);
+ q.fillStyle=gr;q.fillRect(0,0,32,32);spr.push(s);}
+var P=[],O=[],ST=null;
+function add(x,y,z,h){P.push([x,y,z,h]);}
+function box(w,h,d,cx,cy,st,hole){var xs=Math.max(2,Math.round(w/st)),ys=Math.max(2,Math.round(h/st)),zs=Math.max(2,Math.round(d/st)),i,j,k,x,y,z;
+ for(i=0;i&lt;=xs;i++)for(j=0;j&lt;=ys;j++){x=cx-w/2+w*i/xs;y=cy-h/2+h*j/ys;if(!hole||!hole(x,y))add(x,y,d/2,(y-cy)/h+.5);add(x,y,-d/2,(y-cy)/h+.5);}
+ for(i=0;i&lt;=xs;i++)for(k=1;k&lt;zs;k++){x=cx-w/2+w*i/xs;z=-d/2+d*k/zs;add(x,cy+h/2,z,1);add(x,cy-h/2,z,0);}
+ for(j=1;j&lt;ys;j++)for(k=1;k&lt;zs;k++){y=cy-h/2+h*j/ys;z=-d/2+d*k/zs;add(cx+w/2,y,z,(y-cy)/h+.5);add(cx-w/2,y,z,(y-cy)/h+.5);}}
+function tube(cx,cy,R0,r,a0,a1,n,m,h){for(var i=0;i&lt;=n;i++){var a=a0+(a1-a0)*i/n;for(var j=0;j&lt;m;j++){var b=j/m*Math.PI*2,rr=R0+r*Math.cos(b);
+ add(cx+rr*Math.cos(a),cy+rr*Math.sin(a),r*Math.sin(b),h==null?.5+.5*Math.sin(a):h);}}}
+function rod(ax,x0,y0,x1,y1,r,n,m,h){for(var i=0;i&lt;=n;i++){var t=i/n,x=x0+(x1-x0)*t,y=y0+(y1-y0)*t;for(var j=0;j&lt;m;j++){var b=j/m*Math.PI*2;
+ if(ax===&#x27;y&#x27;)add(x+r*Math.cos(b),y,r*Math.sin(b),h);else add(x,y+r*Math.cos(b),r*Math.sin(b),h);}}}
+function ring(r,n,sp,tx,tz,y,h,b){O.push({r:r,n:n,sp:sp,tx:tx,tz:tz,y:y||0,h:h,b:b||1});}
+var CFG={spin:.45,pitch:.18,zoom:1.08,dot:1.3};
+if(S===&#x27;lock&#x27;){
+ box(1.7,1.3,.62,0,-.3,.085,function(x,y){return Math.hypot(x,y+.22)&lt;.17||(Math.abs(x)&lt;.065&amp;&amp;y&lt;-.22&amp;&amp;y&gt;-.62)});
+ tube(0,.62,.5,.1,0,Math.PI,36,10,1);rod(&#x27;y&#x27;,.5,.62,.5,.35,.1,4,10,1);rod(&#x27;y&#x27;,-.5,.62,-.5,.35,.1,4,10,1);
+ ring(1.5,150,.35,1.15,.25,0,.15,1.2);ring(1.75,90,-.22,1.3,-.35,0,.85,1);
+}else if(S===&#x27;vault&#x27;){
+ var n=760;for(var i=0;i&lt;n;i++){var y=1-2*(i+.5)/n,rr=Math.sqrt(1-y*y),a=i*2.399963;add(Math.cos(a)*rr*.62,y*.62,Math.sin(a)*rr*.62,y*.5+.5);}
+ ring(.95,120,.9,1.2,.3,0,.1,1.1);ring(1.22,140,-.6,.4,-.7,0,.55,1.1);ring(1.5,160,.4,1.45,1.1,0,1,1.1);
+ ST=110;CFG.spin=.25;CFG.zoom=1.2;
+}else{
+ tube(-.95,0,.42,.12,0,Math.PI*2,52,10,null);rod(&#x27;x&#x27;,-.53,0,1.3,0,.085,44,9,.6);
+ box(.16,.32,.16,.98,-.22,.06);box(.16,.22,.16,1.22,-.17,.06);
+ ring(1.55,120,.3,1.25,.4,0,.2,1.1);CFG.spin=.5;CFG.pitch=.12;CFG.zoom=1.05;
+}
+var red=window.matchMedia&amp;&amp;matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;).matches,t0=performance.now();
+function frame(now){var t=red?2.2:(now-t0)/1000;g.clearRect(0,0,W,H);g.globalCompositeOperation=&#x27;lighter&#x27;;
+ var yaw=.6+t*CFG.spin,pit=CFG.pitch+Math.sin(t*.6)*.08,bob=Math.sin(t*.9)*.05,cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pit),sp=Math.sin(pit),
+ f=Math.min(W,H)*CFG.zoom,ox=W/2,oy=H/2;
+ function dr(x,y,z,h,b){var X=x*cy+z*sy,Z=-x*sy+z*cy,Y=y+bob,Y2=Y*cp-Z*sp,Z2=Y*sp+Z*cp,d=Z2+4;if(d&lt;.6)return;var s=f/d,px=ox+X*s,py=oy-Y2*s,
+  dp=Math.max(0,Math.min(1,(2.2-Z2)/4.4)),sz=(1.6+2.6*dp)*(s/(f/4))*CFG.dot*(b||1);g.globalAlpha=Math.min(1,(.22+.78*dp)*(b||1));
+  g.drawImage(spr[Math.round(Math.max(0,Math.min(1,h))*(N-1))],px-sz,py-sz,sz*2,sz*2);}
+ for(var i=0;i&lt;P.length;i++){var p=P[i];dr(p[0],p[1],p[2],p[3]);}
+ for(var k=0;k&lt;O.length;k++){var o=O[k],ctx=Math.cos(o.tx),stx=Math.sin(o.tx),ctz=Math.cos(o.tz),stz=Math.sin(o.tz);
+  for(var j=0;j&lt;o.n;j++){var a=j/o.n*Math.PI*2+t*o.sp,x=o.r*Math.cos(a),z=o.r*Math.sin(a),y=o.y,y1=y*ctx-z*stx,z1=y*stx+z*ctx,x2=x*ctz-y1*stz,y2=x*stz+y1*ctz;
+   dr(x2,y2,z1,o.h,o.b*(.55+.45*Math.sin(a*3+t)));}}
+ if(ST){for(var m=0;m&lt;ST;m++){var ph=m/ST,u=(t*.2+ph)%1,rr=2.4*(1-u)+.66*u,an=ph*41+u*5,yy=Math.sin(ph*17)*1.1*(1-u);
+  dr(rr*Math.cos(an),yy,rr*Math.sin(an),1,1.3*Math.sin(u*Math.PI));}}
+ if(!red)requestAnimationFrame(frame);}
+requestAnimationFrame(frame);
+})();&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;"></iframe>
+<div class="col-l">
+<div class="brand rise" style="--i:0"><div class="mark"><svg class="mark-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div><p class="brand-t">Keyvane</p></div>
+<h1 class="h-xl rise" style="--i:1">Your passwords, <span class="grad-t">readable only by&#160;you.</span></h1>
+<p class="lede rise" style="--i:2">A free, open-source password manager for Chrome. No account, no servers, end-to-end encrypted.</p>
+<div class="pills rise" style="--i:3"><p class="pill">Chrome Web Store</p><p class="pill">Edge Add-ons · in review</p><p class="pill">Open source · MIT</p></div>
+</div>
+
+</section>
+
+<section aria-roledescription="slide" aria-label="2 of 11" id="problem" class="dark2 foot-pad">
+<p class="eyebrow rise" style="--i:0">The problem</p>
+<h2 class="h-l rise" style="--i:1">Password managers ask you to trust their cloud.</h2>
+<div class="cards3">
+<div class="card rise" style="--i:2"><svg class="c-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg><h3 class="h-s">Reuse is the default</h3><p class="body">Without a manager, people reuse a handful of passwords. One leaked site opens every account that shares it.</p></div>
+<div class="card rise" style="--i:3"><svg class="c-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H8a6 6 0 1 1 5.7-8h1.8a4 4 0 0 1 2 8z"/></svg><h3 class="h-s">Cloud vaults are targets</h3><p class="body">In 2022 attackers copied backups of LastPass customer vaults. From then on, each master password was the last line of defence.</p></div>
+<div class="card rise" style="--i:4"><svg class="c-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0"/><path d="M16 3.5a4 4 0 0 1 0 8"/><path d="M22 21a7 7 0 0 0-4-6.3"/></svg><h3 class="h-s">Sign-ups and subscriptions</h3><p class="body">Most managers want an account first, and the most useful features often sit behind a monthly plan.</p></div>
+</div>
+<p class="source">Source: LastPass security incident notice, December 2022.</p>
+<p class="foot">keyvane.vercel.app</p><p class="pg">02</p>
+
+</section>
+
+<section aria-roledescription="slide" aria-label="3 of 11" id="answer" class="accent">
+<div class="stmt">
+<p class="eyebrow-dk rise" style="--i:0">The answer</p>
+<h2 class="h-xl rise" style="--i:1">Keyvane keeps the only key on your device.</h2>
+<p class="lede-lt rise" style="--i:2">Your vault is encrypted in the browser before it is stored or synced. There is no Keyvane server to breach.</p>
+</div>
+
+</section>
+
+<section aria-roledescription="slide" aria-label="4 of 11" id="product" class="dark foot-pad">
+<p class="eyebrow rise" style="--i:0">The product</p>
+<h2 class="h-l rise" style="--i:1">A password manager that lives in your toolbar.</h2>
+<div class="shots">
+<div class="shot rise" style="--i:2"><img class="pop" src="img/pop-setup.webp" alt="Keyvane setup screen: create a master password to encrypt your vault"><p class="cap"><b>Set up</b> · one master password</p></div>
+<div class="shot rise" style="--i:3"><img class="pop" src="img/pop-list.webp" alt="Keyvane popup listing saved logins, with the current site's login at the top"><p class="cap"><b>Find</b> · this site's logins first</p></div>
+<div class="shot rise" style="--i:4"><img class="pop" src="img/pop-sync.webp" alt="Keyvane settings showing encrypted sync, storage used and auto-lock"><p class="cap"><b>Sync</b> · encrypted, via Chrome</p></div>
+</div>
+<p class="foot">keyvane.vercel.app</p><p class="pg">04</p>
+
+</section>
+
+<section aria-roledescription="slide" aria-label="5 of 11" id="inpage" class="dark2 foot-pad">
+<p class="eyebrow rise" style="--i:0">New in 1.4</p>
+<h2 class="h-l rise" style="--i:1">It works right where you sign in.</h2>
+<div class="split">
+<img class="browser rise" style="--i:2" src="img/fill-browser.webp" alt="A sign-in page with the Keyvane popup open, ready to fill the saved login">
+<div class="feats">
+<div class="feat rise" style="--i:3"><h3 class="h-xs">Login menu</h3><p class="body">Click a login box and your saved logins for that site appear under it.</p></div>
+<div class="feat rise" style="--i:4"><h3 class="h-xs">Saves as you sign in</h3><p class="body">After you log in, Keyvane offers to save or update the login.</p></div>
+<div class="feat rise" style="--i:5"><h3 class="h-xs">Strong passwords, suggested</h3><p class="body">Sign-up boxes get a generated password, filled into both fields.</p></div>
+</div>
+</div>
+<p class="foot">keyvane.vercel.app</p><p class="pg">05</p>
+
+</section>
+
+<section aria-roledescription="slide" aria-label="6 of 11" id="security" class="dark foot-pad">
+<div class="blob b3"></div>
+<iframe class="embed" style="position:absolute;left:1080px;top:150px;width:712px;height:760px;border:0" title="3D animation" aria-hidden="true" tabindex="-1" srcdoc="&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;style&gt;html,body{margin:0;height:100%;background:transparent;overflow:hidden}canvas{width:100%;height:100%;display:block}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;canvas id=&quot;c&quot;&gt;&lt;/canvas&gt;&lt;script&gt;window.SCENE=&quot;vault&quot;;(function(){
+var S=window.SCENE,c=document.getElementById(&#x27;c&#x27;),g=c.getContext(&#x27;2d&#x27;);
+var W=1,H=1,R=Math.min(2,window.devicePixelRatio||1);
+function fit(){W=c.clientWidth||innerWidth;H=c.clientHeight||innerHeight;c.width=Math.round(W*R);c.height=Math.round(H*R);g.setTransform(R,0,0,R,0,0);}
+addEventListener(&#x27;resize&#x27;,fit);fit();
+var A=[139,92,246],B=[34,211,238],N=24,spr=[];
+for(var i=0;i&lt;N;i++){var t=i/(N-1),col=[0,1,2].map(function(k){return Math.round(A[k]+(B[k]-A[k])*t)}).join(&#x27;,&#x27;);
+ var s=document.createElement(&#x27;canvas&#x27;);s.width=s.height=32;var q=s.getContext(&#x27;2d&#x27;),gr=q.createRadialGradient(16,16,0,16,16,16);
+ gr.addColorStop(0,&#x27;rgba(255,255,255,1)&#x27;);gr.addColorStop(.16,&#x27;rgba(&#x27;+col+&#x27;,.95)&#x27;);gr.addColorStop(.48,&#x27;rgba(&#x27;+col+&#x27;,.26)&#x27;);gr.addColorStop(1,&#x27;rgba(&#x27;+col+&#x27;,0)&#x27;);
+ q.fillStyle=gr;q.fillRect(0,0,32,32);spr.push(s);}
+var P=[],O=[],ST=null;
+function add(x,y,z,h){P.push([x,y,z,h]);}
+function box(w,h,d,cx,cy,st,hole){var xs=Math.max(2,Math.round(w/st)),ys=Math.max(2,Math.round(h/st)),zs=Math.max(2,Math.round(d/st)),i,j,k,x,y,z;
+ for(i=0;i&lt;=xs;i++)for(j=0;j&lt;=ys;j++){x=cx-w/2+w*i/xs;y=cy-h/2+h*j/ys;if(!hole||!hole(x,y))add(x,y,d/2,(y-cy)/h+.5);add(x,y,-d/2,(y-cy)/h+.5);}
+ for(i=0;i&lt;=xs;i++)for(k=1;k&lt;zs;k++){x=cx-w/2+w*i/xs;z=-d/2+d*k/zs;add(x,cy+h/2,z,1);add(x,cy-h/2,z,0);}
+ for(j=1;j&lt;ys;j++)for(k=1;k&lt;zs;k++){y=cy-h/2+h*j/ys;z=-d/2+d*k/zs;add(cx+w/2,y,z,(y-cy)/h+.5);add(cx-w/2,y,z,(y-cy)/h+.5);}}
+function tube(cx,cy,R0,r,a0,a1,n,m,h){for(var i=0;i&lt;=n;i++){var a=a0+(a1-a0)*i/n;for(var j=0;j&lt;m;j++){var b=j/m*Math.PI*2,rr=R0+r*Math.cos(b);
+ add(cx+rr*Math.cos(a),cy+rr*Math.sin(a),r*Math.sin(b),h==null?.5+.5*Math.sin(a):h);}}}
+function rod(ax,x0,y0,x1,y1,r,n,m,h){for(var i=0;i&lt;=n;i++){var t=i/n,x=x0+(x1-x0)*t,y=y0+(y1-y0)*t;for(var j=0;j&lt;m;j++){var b=j/m*Math.PI*2;
+ if(ax===&#x27;y&#x27;)add(x+r*Math.cos(b),y,r*Math.sin(b),h);else add(x,y+r*Math.cos(b),r*Math.sin(b),h);}}}
+function ring(r,n,sp,tx,tz,y,h,b){O.push({r:r,n:n,sp:sp,tx:tx,tz:tz,y:y||0,h:h,b:b||1});}
+var CFG={spin:.45,pitch:.18,zoom:1.08,dot:1.3};
+if(S===&#x27;lock&#x27;){
+ box(1.7,1.3,.62,0,-.3,.085,function(x,y){return Math.hypot(x,y+.22)&lt;.17||(Math.abs(x)&lt;.065&amp;&amp;y&lt;-.22&amp;&amp;y&gt;-.62)});
+ tube(0,.62,.5,.1,0,Math.PI,36,10,1);rod(&#x27;y&#x27;,.5,.62,.5,.35,.1,4,10,1);rod(&#x27;y&#x27;,-.5,.62,-.5,.35,.1,4,10,1);
+ ring(1.5,150,.35,1.15,.25,0,.15,1.2);ring(1.75,90,-.22,1.3,-.35,0,.85,1);
+}else if(S===&#x27;vault&#x27;){
+ var n=760;for(var i=0;i&lt;n;i++){var y=1-2*(i+.5)/n,rr=Math.sqrt(1-y*y),a=i*2.399963;add(Math.cos(a)*rr*.62,y*.62,Math.sin(a)*rr*.62,y*.5+.5);}
+ ring(.95,120,.9,1.2,.3,0,.1,1.1);ring(1.22,140,-.6,.4,-.7,0,.55,1.1);ring(1.5,160,.4,1.45,1.1,0,1,1.1);
+ ST=110;CFG.spin=.25;CFG.zoom=1.2;
+}else{
+ tube(-.95,0,.42,.12,0,Math.PI*2,52,10,null);rod(&#x27;x&#x27;,-.53,0,1.3,0,.085,44,9,.6);
+ box(.16,.32,.16,.98,-.22,.06);box(.16,.22,.16,1.22,-.17,.06);
+ ring(1.55,120,.3,1.25,.4,0,.2,1.1);CFG.spin=.5;CFG.pitch=.12;CFG.zoom=1.05;
+}
+var red=window.matchMedia&amp;&amp;matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;).matches,t0=performance.now();
+function frame(now){var t=red?2.2:(now-t0)/1000;g.clearRect(0,0,W,H);g.globalCompositeOperation=&#x27;lighter&#x27;;
+ var yaw=.6+t*CFG.spin,pit=CFG.pitch+Math.sin(t*.6)*.08,bob=Math.sin(t*.9)*.05,cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pit),sp=Math.sin(pit),
+ f=Math.min(W,H)*CFG.zoom,ox=W/2,oy=H/2;
+ function dr(x,y,z,h,b){var X=x*cy+z*sy,Z=-x*sy+z*cy,Y=y+bob,Y2=Y*cp-Z*sp,Z2=Y*sp+Z*cp,d=Z2+4;if(d&lt;.6)return;var s=f/d,px=ox+X*s,py=oy-Y2*s,
+  dp=Math.max(0,Math.min(1,(2.2-Z2)/4.4)),sz=(1.6+2.6*dp)*(s/(f/4))*CFG.dot*(b||1);g.globalAlpha=Math.min(1,(.22+.78*dp)*(b||1));
+  g.drawImage(spr[Math.round(Math.max(0,Math.min(1,h))*(N-1))],px-sz,py-sz,sz*2,sz*2);}
+ for(var i=0;i&lt;P.length;i++){var p=P[i];dr(p[0],p[1],p[2],p[3]);}
+ for(var k=0;k&lt;O.length;k++){var o=O[k],ctx=Math.cos(o.tx),stx=Math.sin(o.tx),ctz=Math.cos(o.tz),stz=Math.sin(o.tz);
+  for(var j=0;j&lt;o.n;j++){var a=j/o.n*Math.PI*2+t*o.sp,x=o.r*Math.cos(a),z=o.r*Math.sin(a),y=o.y,y1=y*ctx-z*stx,z1=y*stx+z*ctx,x2=x*ctz-y1*stz,y2=x*stz+y1*ctz;
+   dr(x2,y2,z1,o.h,o.b*(.55+.45*Math.sin(a*3+t)));}}
+ if(ST){for(var m=0;m&lt;ST;m++){var ph=m/ST,u=(t*.2+ph)%1,rr=2.4*(1-u)+.66*u,an=ph*41+u*5,yy=Math.sin(ph*17)*1.1*(1-u);
+  dr(rr*Math.cos(an),yy,rr*Math.sin(an),1,1.3*Math.sin(u*Math.PI));}}
+ if(!red)requestAnimationFrame(frame);}
+requestAnimationFrame(frame);
+})();&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;"></iframe>
+<p class="eyebrow rise" style="--i:0">How it works</p>
+<h2 class="h-l narrow rise" style="--i:1">Encrypted before it leaves your device.</h2>
+<div class="steps">
+<div class="step rise" style="--i:2"><p class="num">01</p><div><h3 class="h-xs">Master password</h3><p class="body">Only you know it. Keyvane never stores it.</p></div></div>
+<div class="step rise" style="--i:3"><p class="num">02</p><div><h3 class="h-xs">PBKDF2-SHA256 · 600,000 rounds</h3><p class="body">Turns the password into a key and makes guessing slow.</p></div></div>
+<div class="step rise" style="--i:4"><p class="num">03</p><div><h3 class="h-xs">AES-256-GCM</h3><p class="body">Encrypts the vault with a fresh nonce on every save.</p></div></div>
+<div class="step rise" style="--i:5"><p class="num">04</p><div><h3 class="h-xs">Ciphertext only</h3><p class="body">Chrome sync carries scrambled bytes. Google cannot read them.</p></div></div>
+</div>
+<p class="foot">keyvane.vercel.app</p><p class="pg">06</p>
+
+</section>
+
+<section aria-roledescription="slide" aria-label="7 of 11" id="compare" class="dark2 foot-pad">
+<p class="eyebrow rise" style="--i:0">Why Keyvane</p>
+<h2 class="h-l rise" style="--i:1">Less to trust, nothing to pay.</h2>
+<table class="cmp rise" style="--i:2">
+<tr><th style="width:30%"></th><th style="width:35%">Keyvane</th><th style="width:35%">Typical cloud password manager</th></tr>
+<tr><td>Account to sign up</td><td class="kv">None</td><td>Required</td></tr>
+<tr><td>Where the vault lives</td><td class="kv">Your browser, encrypted</td><td>The vendor’s servers, encrypted</td></tr>
+<tr><td>Network access</td><td class="kv">Blocked by its own security policy</td><td>Constant sync with the vendor</td></tr>
+<tr><td>Price</td><td class="kv">Free, every feature</td><td>Free tier, paid plans for more</td></tr>
+<tr><td>Source code</td><td class="kv">Open, MIT licence</td><td>Varies by vendor</td></tr>
+</table>
+<p class="foot">keyvane.vercel.app</p><p class="pg">07</p>
+
+</section>
+
+<section aria-roledescription="slide" aria-label="8 of 11" id="traction" class="dark foot-pad">
+<p class="eyebrow rise" style="--i:0">Progress</p>
+<h2 class="h-l rise" style="--i:1">Built and shipped in five days.</h2>
+<div class="tl">
+<div class="ms rise" style="--i:2"><p class="date">Nov 12</p><h3 class="h-xs">First build</h3><p class="body-s">Encrypted vault, generator, one-click fill</p></div>
+<div class="ms rise" style="--i:3"><p class="date">Nov 13</p><h3 class="h-xs">Live on the Chrome Web Store</h3><p class="body-s">Version 1.1 with encrypted Chrome sync</p></div>
+<div class="ms rise" style="--i:4"><p class="date">Nov 14</p><h3 class="h-xs">Homepage live</h3><p class="body-s">keyvane.vercel.app with demo video</p></div>
+<div class="ms rise" style="--i:5"><p class="date">Nov 15</p><h3 class="h-xs">Open source and Edge</h3><p class="body-s">Code on GitHub; 1.2 in review on Chrome and Edge</p></div>
+<div class="ms now rise" style="--i:6"><p class="date">Nov 16</p><h3 class="h-xs">Version 1.4 ready</h3><p class="body-s">Login menu and password suggestions</p></div>
+</div>
+<p class="foot">keyvane.vercel.app</p><p class="pg">08</p>
+
+</section>
+
+<section aria-roledescription="slide" aria-label="9 of 11" id="next" class="dark2 foot-pad">
+<p class="eyebrow rise" style="--i:0">What’s next</p>
+<h2 class="h-l rise" style="--i:1">More browsers, more trust.</h2>
+<div class="cards4">
+<div class="card rise" style="--i:2"><svg class="c-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 1.8 3-.2 1 2.8 2.6 1.6-.8 2.9.8 2.9-2.6 1.6-1 2.8-3-.2L12 22l-2.4-1.8-3 .2-1-2.8-2.6-1.6.8-2.9-.8-2.9 2.6-1.6 1-2.8 3 .2z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg><h3 class="h-s">Store approvals</h3><p class="body">Get 1.2 and 1.4 through Chrome and Edge review.</p></div>
+<div class="card rise" style="--i:3"><svg class="c-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><h3 class="h-s">Firefox and Safari</h3><p class="body">The same encrypted vault in more browsers.</p></div>
+<div class="card rise" style="--i:4"><svg class="c-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="15.5" r="4.5"/><path d="m10.7 12.3 9.3-9.3M17 6l3 3M15 8l2 2"/></svg><h3 class="h-s">Passkeys</h3><p class="body">Store and use passkeys beside passwords.</p></div>
+<div class="card rise" style="--i:5"><svg class="c-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.4 8.3 8 9 4.6-.7 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><h3 class="h-s">Security review</h3><p class="body">An outside audit of the crypto and autofill code.</p></div>
+</div>
+<p class="foot">keyvane.vercel.app</p><p class="pg">09</p>
+
+</section>
+
+<section aria-roledescription="slide" aria-label="10 of 11" id="ask" class="dark foot-pad">
+<p class="eyebrow rise" style="--i:0">The ask</p>
+<h2 class="h-l rise" style="--i:1">Help Keyvane reach its first [___] users.</h2>
+<div class="cards3">
+<div class="card rise" style="--i:2"><svg class="c-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg><h3 class="h-s">Install and rate</h3><p class="body">Ratings decide how the Chrome Web Store ranks Keyvane.</p></div>
+<div class="card rise" style="--i:3"><svg class="c-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg><h3 class="h-s">Review the code</h3><p class="body">Read the encryption, open issues, send pull requests on GitHub.</p></div>
+<div class="card rise" style="--i:4"><svg class="c-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/></svg><h3 class="h-s">[Your ask]</h3><p class="body">[Funding, mentorship, a launch partner or feedback.]</p></div>
+</div>
+<p class="foot">keyvane.vercel.app</p><p class="pg">10</p>
+
+</section>
+
+<section aria-roledescription="slide" aria-label="11 of 11" id="close" class="dark">
+<div class="blob b1"></div><div class="blob b2"></div>
+<iframe class="embed" style="position:absolute;left:980px;top:140px;width:812px;height:800px;border:0" title="3D animation" aria-hidden="true" tabindex="-1" srcdoc="&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;style&gt;html,body{margin:0;height:100%;background:transparent;overflow:hidden}canvas{width:100%;height:100%;display:block}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;canvas id=&quot;c&quot;&gt;&lt;/canvas&gt;&lt;script&gt;window.SCENE=&quot;key&quot;;(function(){
+var S=window.SCENE,c=document.getElementById(&#x27;c&#x27;),g=c.getContext(&#x27;2d&#x27;);
+var W=1,H=1,R=Math.min(2,window.devicePixelRatio||1);
+function fit(){W=c.clientWidth||innerWidth;H=c.clientHeight||innerHeight;c.width=Math.round(W*R);c.height=Math.round(H*R);g.setTransform(R,0,0,R,0,0);}
+addEventListener(&#x27;resize&#x27;,fit);fit();
+var A=[139,92,246],B=[34,211,238],N=24,spr=[];
+for(var i=0;i&lt;N;i++){var t=i/(N-1),col=[0,1,2].map(function(k){return Math.round(A[k]+(B[k]-A[k])*t)}).join(&#x27;,&#x27;);
+ var s=document.createElement(&#x27;canvas&#x27;);s.width=s.height=32;var q=s.getContext(&#x27;2d&#x27;),gr=q.createRadialGradient(16,16,0,16,16,16);
+ gr.addColorStop(0,&#x27;rgba(255,255,255,1)&#x27;);gr.addColorStop(.16,&#x27;rgba(&#x27;+col+&#x27;,.95)&#x27;);gr.addColorStop(.48,&#x27;rgba(&#x27;+col+&#x27;,.26)&#x27;);gr.addColorStop(1,&#x27;rgba(&#x27;+col+&#x27;,0)&#x27;);
+ q.fillStyle=gr;q.fillRect(0,0,32,32);spr.push(s);}
+var P=[],O=[],ST=null;
+function add(x,y,z,h){P.push([x,y,z,h]);}
+function box(w,h,d,cx,cy,st,hole){var xs=Math.max(2,Math.round(w/st)),ys=Math.max(2,Math.round(h/st)),zs=Math.max(2,Math.round(d/st)),i,j,k,x,y,z;
+ for(i=0;i&lt;=xs;i++)for(j=0;j&lt;=ys;j++){x=cx-w/2+w*i/xs;y=cy-h/2+h*j/ys;if(!hole||!hole(x,y))add(x,y,d/2,(y-cy)/h+.5);add(x,y,-d/2,(y-cy)/h+.5);}
+ for(i=0;i&lt;=xs;i++)for(k=1;k&lt;zs;k++){x=cx-w/2+w*i/xs;z=-d/2+d*k/zs;add(x,cy+h/2,z,1);add(x,cy-h/2,z,0);}
+ for(j=1;j&lt;ys;j++)for(k=1;k&lt;zs;k++){y=cy-h/2+h*j/ys;z=-d/2+d*k/zs;add(cx+w/2,y,z,(y-cy)/h+.5);add(cx-w/2,y,z,(y-cy)/h+.5);}}
+function tube(cx,cy,R0,r,a0,a1,n,m,h){for(var i=0;i&lt;=n;i++){var a=a0+(a1-a0)*i/n;for(var j=0;j&lt;m;j++){var b=j/m*Math.PI*2,rr=R0+r*Math.cos(b);
+ add(cx+rr*Math.cos(a),cy+rr*Math.sin(a),r*Math.sin(b),h==null?.5+.5*Math.sin(a):h);}}}
+function rod(ax,x0,y0,x1,y1,r,n,m,h){for(var i=0;i&lt;=n;i++){var t=i/n,x=x0+(x1-x0)*t,y=y0+(y1-y0)*t;for(var j=0;j&lt;m;j++){var b=j/m*Math.PI*2;
+ if(ax===&#x27;y&#x27;)add(x+r*Math.cos(b),y,r*Math.sin(b),h);else add(x,y+r*Math.cos(b),r*Math.sin(b),h);}}}
+function ring(r,n,sp,tx,tz,y,h,b){O.push({r:r,n:n,sp:sp,tx:tx,tz:tz,y:y||0,h:h,b:b||1});}
+var CFG={spin:.45,pitch:.18,zoom:1.08,dot:1.3};
+if(S===&#x27;lock&#x27;){
+ box(1.7,1.3,.62,0,-.3,.085,function(x,y){return Math.hypot(x,y+.22)&lt;.17||(Math.abs(x)&lt;.065&amp;&amp;y&lt;-.22&amp;&amp;y&gt;-.62)});
+ tube(0,.62,.5,.1,0,Math.PI,36,10,1);rod(&#x27;y&#x27;,.5,.62,.5,.35,.1,4,10,1);rod(&#x27;y&#x27;,-.5,.62,-.5,.35,.1,4,10,1);
+ ring(1.5,150,.35,1.15,.25,0,.15,1.2);ring(1.75,90,-.22,1.3,-.35,0,.85,1);
+}else if(S===&#x27;vault&#x27;){
+ var n=760;for(var i=0;i&lt;n;i++){var y=1-2*(i+.5)/n,rr=Math.sqrt(1-y*y),a=i*2.399963;add(Math.cos(a)*rr*.62,y*.62,Math.sin(a)*rr*.62,y*.5+.5);}
+ ring(.95,120,.9,1.2,.3,0,.1,1.1);ring(1.22,140,-.6,.4,-.7,0,.55,1.1);ring(1.5,160,.4,1.45,1.1,0,1,1.1);
+ ST=110;CFG.spin=.25;CFG.zoom=1.2;
+}else{
+ tube(-.95,0,.42,.12,0,Math.PI*2,52,10,null);rod(&#x27;x&#x27;,-.53,0,1.3,0,.085,44,9,.6);
+ box(.16,.32,.16,.98,-.22,.06);box(.16,.22,.16,1.22,-.17,.06);
+ ring(1.55,120,.3,1.25,.4,0,.2,1.1);CFG.spin=.5;CFG.pitch=.12;CFG.zoom=1.05;
+}
+var red=window.matchMedia&amp;&amp;matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;).matches,t0=performance.now();
+function frame(now){var t=red?2.2:(now-t0)/1000;g.clearRect(0,0,W,H);g.globalCompositeOperation=&#x27;lighter&#x27;;
+ var yaw=.6+t*CFG.spin,pit=CFG.pitch+Math.sin(t*.6)*.08,bob=Math.sin(t*.9)*.05,cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pit),sp=Math.sin(pit),
+ f=Math.min(W,H)*CFG.zoom,ox=W/2,oy=H/2;
+ function dr(x,y,z,h,b){var X=x*cy+z*sy,Z=-x*sy+z*cy,Y=y+bob,Y2=Y*cp-Z*sp,Z2=Y*sp+Z*cp,d=Z2+4;if(d&lt;.6)return;var s=f/d,px=ox+X*s,py=oy-Y2*s,
+  dp=Math.max(0,Math.min(1,(2.2-Z2)/4.4)),sz=(1.6+2.6*dp)*(s/(f/4))*CFG.dot*(b||1);g.globalAlpha=Math.min(1,(.22+.78*dp)*(b||1));
+  g.drawImage(spr[Math.round(Math.max(0,Math.min(1,h))*(N-1))],px-sz,py-sz,sz*2,sz*2);}
+ for(var i=0;i&lt;P.length;i++){var p=P[i];dr(p[0],p[1],p[2],p[3]);}
+ for(var k=0;k&lt;O.length;k++){var o=O[k],ctx=Math.cos(o.tx),stx=Math.sin(o.tx),ctz=Math.cos(o.tz),stz=Math.sin(o.tz);
+  for(var j=0;j&lt;o.n;j++){var a=j/o.n*Math.PI*2+t*o.sp,x=o.r*Math.cos(a),z=o.r*Math.sin(a),y=o.y,y1=y*ctx-z*stx,z1=y*stx+z*ctx,x2=x*ctz-y1*stz,y2=x*stz+y1*ctz;
+   dr(x2,y2,z1,o.h,o.b*(.55+.45*Math.sin(a*3+t)));}}
+ if(ST){for(var m=0;m&lt;ST;m++){var ph=m/ST,u=(t*.2+ph)%1,rr=2.4*(1-u)+.66*u,an=ph*41+u*5,yy=Math.sin(ph*17)*1.1*(1-u);
+  dr(rr*Math.cos(an),yy,rr*Math.sin(an),1,1.3*Math.sin(u*Math.PI));}}
+ if(!red)requestAnimationFrame(frame);}
+requestAnimationFrame(frame);
+})();&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;"></iframe>
+<div class="col-l">
+<h1 class="h-xl rise" style="--i:0">Stop reusing passwords <span class="grad-t">today.</span></h1>
+<div class="links rise" style="--i:1">
+<p class="link"><svg class="l-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>keyvane.vercel.app</p>
+<p class="link"><svg class="l-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg>github.com/dheerajcp69/keyvane</p>
+<p class="link"><svg class="l-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg>Chrome Web Store: search “Keyvane”</p>
+</div>
+<p class="thanks rise" style="--i:2">Thank you.</p>
+</div>
+
+</section>
+
+</main>
+<nav id="ui" aria-label="Slide controls">
+<button id="prev" type="button" aria-label="Previous slide">←</button>
+<span id="count">1 / 11</span>
+<button id="next" type="button" aria-label="Next slide">→</button>
+<div id="bar"><i></i></div>
+<a href="https://keyvane.vercel.app" rel="noopener">keyvane.vercel.app</a>
+<button id="fs" type="button" aria-label="Full screen">Full screen</button>
+</nav>
+<script>
+(function(){
+  var S=[].slice.call(document.querySelectorAll('#stage>section')),stage=document.getElementById('stage'),n=S.length,cur=-1,hideT;
+  function fit(){var k=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform='scale('+k+') translate(-50%,-50%)';}
+  function go(i,push){i=Math.max(0,Math.min(n-1,i));if(i===cur)return;if(cur>=0)S[cur].classList.remove('on');cur=i;var s=S[i];s.classList.add('on');
+    s.querySelectorAll('.rise').forEach(function(e){e.style.animation='none';e.offsetWidth;e.style.animation='';});
+    document.getElementById('count').textContent=(i+1)+' / '+n;document.querySelector('#bar i').style.width=((i+1)/n*100)+'%';
+    if(push!==false)history.replaceState(null,'','#'+(i+1));}
+  function showUI(){document.body.classList.add('ui');clearTimeout(hideT);hideT=setTimeout(function(){document.body.classList.remove('ui')},2600);}
+  addEventListener('resize',fit);fit();
+  var h=parseInt((location.hash||'').slice(1),10);go(h>0?h-1:0,false);showUI();
+  addEventListener('hashchange',function(){var h=parseInt(location.hash.slice(1),10);if(h>0)go(h-1,false);});
+  addEventListener('keydown',function(e){if(e.target.closest&&e.target.closest('button'))return;
+    if(['ArrowRight','PageDown',' ','Enter'].indexOf(e.key)>=0){e.preventDefault();go(cur+1);}
+    else if(['ArrowLeft','PageUp','Backspace'].indexOf(e.key)>=0){e.preventDefault();go(cur-1);}
+    else if(e.key==='Home')go(0);else if(e.key==='End')go(n-1);else if(e.key==='f'||e.key==='F')toggleFs();showUI();});
+  document.getElementById('prev').onclick=function(){go(cur-1)};document.getElementById('next').onclick=function(){go(cur+1)};
+  function toggleFs(){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(function(){})}catch(e){}}
+  document.getElementById('fs').onclick=toggleFs;
+  stage.addEventListener('click',function(e){if(e.target.closest('a'))return;go(e.clientX>innerWidth/2?cur+1:cur-1);});
+  var x0=null;addEventListener('touchstart',function(e){x0=e.touches[0].clientX;showUI();},{passive:true});
+  addEventListener('touchend',function(e){if(x0==null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)go(cur+(dx<0?1:-1));x0=null;},{passive:true});
+  addEventListener('mousemove',showUI);
+})();
+</script>
+</body>
+</html>
