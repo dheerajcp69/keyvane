@@ -571,7 +571,7 @@ async function drawCards() {
     </div>`;
   } else if (!pending.length && !offerOn && !tips.offerDismissed) {
     html += `<div class="promo">
-      <div class="meta"><div class="h">Save logins as you sign in</div><div class="u">Turn on “Offer to save” so you never type a login into Keyvane by hand.</div></div>
+      <div class="meta"><div class="h">Save and suggest passwords</div><div class="u">Keyvane saves logins as you sign in and suggests strong passwords on sign-up pages.</div></div>
       <button class="btn btn-primary sm" data-card="enable">Turn on</button>
       <button class="icon-btn sm" data-card="tipx" title="Dismiss">×</button>
     </div>`;
@@ -629,9 +629,9 @@ function renderEnableSave() {
       <div class="hero-mark">${I.fill.replace(/currentColor/g, '#fff')}</div>
       <div>
         <h1>Save logins <span class="grad">as you sign in.</span></h1>
-        <p style="margin-top:8px">When you log in to a site, Keyvane shows a small “Save login?” card. One click and it's in your vault.</p>
+        <p style="margin-top:8px">When you log in, Keyvane shows a small “Save login?” card. When you create an account, it suggests a strong password and fills it in for you.</p>
       </div>
-      <div class="note">${I.shield}<span>Chrome will ask to let Keyvane “read and change data on websites”. Keyvane only looks at login forms when you submit them, never sends anything anywhere, and you can turn this off in Settings at any time.</span></div>
+      <div class="note">${I.shield}<span>Chrome will ask to let Keyvane “read and change data on websites”. Keyvane only looks at password boxes and login forms, never sends anything anywhere, and you can turn this off in Settings at any time.</span></div>
       <button class="btn btn-primary block" id="allow">Allow and turn on</button>
       <button class="btn btn-ghost block" id="skip">Not now</button>
     </div>
@@ -642,7 +642,7 @@ function renderEnableSave() {
     S.settings.offerSave = true;
     await Store.setSetting('settings', S.settings);
     app.innerHTML = `<section class="view"><div class="hero"><div class="hero-mark">${I.shield.replace(/currentColor/g, '#fff')}</div>
-      <div><h1>You're all set.</h1><p style="margin-top:8px">Next time you sign in somewhere, Keyvane will offer to save it. You can close this tab.</p></div>
+      <div><h1>You're all set.</h1><p style="margin-top:8px">Next time you sign in or sign up somewhere, Keyvane will help. You can close this tab.</p></div>
       <button class="btn btn-ghost block" id="done">Close tab</button></div></section>`;
     $('#done').addEventListener('click', () => window.close());
   });
@@ -666,7 +666,7 @@ function bindOfferSwitch() {
       await Store.setSetting('settings', S.settings);
       try { await chrome.permissions.remove({ origins: ['<all_urls>'] }); } catch {}
       paint(false);
-      toast('Offer to save turned off');
+      toast('Save and suggest turned off');
     } else openEnableSave();
   });
 }
@@ -740,7 +740,7 @@ function renderSettings() {
       </div>
 
       <div class="card">
-        <div class="set-row"><div><h3>Offer to save passwords</h3><p>When you sign in to a site, Keyvane asks whether to save or update the login.</p></div>
+        <div class="set-row"><div><h3>Save and suggest passwords</h3><p>Keyvane offers to save logins when you sign in, and suggests a strong password when you create an account.</p></div>
           <button class="switch" id="offer" role="switch" aria-checked="false"><i></i></button></div>
         <p id="neverRow" class="hidden" style="font-size:11.5px"></p>
       </div>
@@ -792,7 +792,7 @@ function renderSettings() {
         <p>Permanently erase the vault from this browser.</p>
         <button class="btn btn-danger block" id="wipe">Erase vault</button>
       </div>
-      <p style="text-align:center;color:var(--faint);font-size:11px">Keyvane 1.2 · end-to-end encrypted · free</p>
+      <p style="text-align:center;color:var(--faint);font-size:11px">Keyvane 1.3 · end-to-end encrypted · free</p>
     </div>
   </section>`;
 
