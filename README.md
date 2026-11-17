@@ -2,7 +2,7 @@
 
 **A free, end-to-end encrypted password and passkey manager for Chrome, Edge and Safari.** No account, no servers, no tracking.
 
-[Install from the Chrome Web Store](https://chromewebstore.google.com/detail/occfjinobiaefhbkngbolamflknedmlo) · [Website](https://keyvane.vercel.app) · [Privacy policy](https://keyvane.vercel.app/privacy)
+[Install from the Chrome Web Store](https://chromewebstore.google.com/detail/occfjinobiaefhbkngbolamflknedmlo) · [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/jpoallppdlhipeeadnckmepilfckdold) · [Website](https://keyvane.vercel.app) · [Privacy policy](https://keyvane.vercel.app/privacy)
 
 ![Keyvane](store/screenshot-1.png)
 

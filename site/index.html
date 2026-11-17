@@ -17,14 +17,14 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500&display=swap">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
- {"@type":"SoftwareApplication","name":"Keyvane","applicationCategory":"SecurityApplication","operatingSystem":"Chrome, Edge, Brave, Safari","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://keyvane.vercel.app/","downloadUrl":"https://chromewebstore.google.com/detail/occfjinobiaefhbkngbolamflknedmlo","description":"Free, open-source, end-to-end encrypted password and passkey manager for Chrome. No account, no servers.","sameAs":["https://github.com/dheerajcp69/keyvane"]},
+ {"@type":"SoftwareApplication","name":"Keyvane","applicationCategory":"SecurityApplication","operatingSystem":"Chrome, Edge, Brave, Safari","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://keyvane.vercel.app/","downloadUrl":"https://chromewebstore.google.com/detail/occfjinobiaefhbkngbolamflknedmlo","description":"Free, open-source, end-to-end encrypted password and passkey manager for Chrome. No account, no servers.","sameAs":["https://github.com/dheerajcp69/keyvane","https://microsoftedge.microsoft.com/addons/detail/jpoallppdlhipeeadnckmepilfckdold"]},
  {"@type":"FAQPage","mainEntity":[
   {"@type":"Question","name":"Is Keyvane really free?","acceptedAnswer":{"@type":"Answer","text":"Yes. There are no plans, ads or paid features. Keyvane has no servers to pay for: your encrypted vault lives in your browser and syncs through your own Chrome sign-in."}},
   {"@type":"Question","name":"Can anyone else read my passwords?","acceptedAnswer":{"@type":"Answer","text":"No. Your vault is encrypted on your device with AES-256-GCM, using a key derived from your master password with 600,000 rounds of PBKDF2. Keyvane never sends data anywhere, and Google only stores ciphertext when it syncs."}},
   {"@type":"Question","name":"What happens if I forget my master password?","acceptedAnswer":{"@type":"Answer","text":"Nobody can recover it, including the developer. That is the price of real end-to-end encryption, so keep an encrypted backup from Settings and store your master password somewhere safe."}},
   {"@type":"Question","name":"Can I move my passwords from Chrome, LastPass or Bitwarden?","acceptedAnswer":{"@type":"Answer","text":"Yes. Export a CSV from your browser or password manager and import it from Keyvane's Settings. Chrome, Edge, Brave, Firefox, Safari, Bitwarden, LastPass, 1Password, Dashlane and Proton Pass exports work."}},
   {"@type":"Question","name":"Does Keyvane sync between computers?","acceptedAnswer":{"@type":"Answer","text":"Yes, through Chrome sync. Install Keyvane on each computer where you're signed in to Chrome and your encrypted vault follows you, with room for about 1,700 logins."}},
-  {"@type":"Question","name":"Does it work in Brave or Edge?","acceptedAnswer":{"@type":"Answer","text":"Keyvane installs from the Chrome Web Store in Brave and Edge. In those browsers the vault stays on that computer; use Settings, Export and Import to move it."}},
+  {"@type":"Question","name":"Does it work in Brave or Edge?","acceptedAnswer":{"@type":"Answer","text":"Yes. Edge users can install Keyvane from Microsoft Edge Add-ons, and it syncs through Edge sync. In Brave, install it from the Chrome Web Store; the vault stays on that computer, so use Settings, Export and Import to move it."}},
   {"@type":"Question","name":"Does Keyvane support passkeys?","acceptedAnswer":{"@type":"Answer","text":"Yes, from version 1.5. Turn on Save and suggest passwords, and when a site offers a passkey Keyvane asks whether to keep it in your encrypted vault. You can always choose your device or a security key instead."}}
  ]}
 ]}
@@ -191,7 +191,7 @@
         <p class="lede">Keyvane saves logins as you sign in, fills them in one click and follows your Chrome sign-in to every computer. It's encrypted on your device before it's stored anywhere, so nobody else can read it.</p>
         <div class="actions">
           <a class="cta" href="https://chromewebstore.google.com/detail/occfjinobiaefhbkngbolamflknedmlo" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add to Chrome, it's free</a>
-          <a class="ghost" href="#security">How it stays private</a>
+          <a class="ghost" href="https://microsoftedge.microsoft.com/addons/detail/jpoallppdlhipeeadnckmepilfckdold" rel="noopener">Get it for Edge</a>
         </div>
         <div class="facts"><span>No account</span><span>No servers</span><span>AES-256 encryption</span><span>Open source</span></div>
       </div>
@@ -270,7 +270,7 @@
         <details><summary>Can I move my passwords from Chrome, LastPass or Bitwarden?</summary><p>Yes. Export a CSV from your browser or password manager and import it from Keyvane's Settings. Chrome, Edge, Brave, Firefox, Safari, Bitwarden, LastPass, 1Password, Dashlane and Proton Pass exports work.</p></details>
         <details><summary>Does Keyvane sync between computers?</summary><p>Yes, through Chrome sync. Install Keyvane on each computer where you're signed in to Chrome and your encrypted vault follows you, with room for about 1,700 logins.</p></details>
         <details><summary>Does Keyvane support passkeys?</summary><p>Yes, from version 1.5. Turn on “Save and suggest passwords”, and when a site offers a passkey Keyvane asks whether to keep it in your encrypted vault. Signing in is one click from the login menu. You can always choose your device or a security key instead.</p></details>
-        <details><summary>Does it work in Brave or Edge?</summary><p>Keyvane installs from the Chrome Web Store in Brave and Edge. In those browsers the vault stays on that computer; use Settings, Export and Import to move it.</p></details>
+        <details><summary>Does it work in Brave or Edge?</summary><p>Yes. Edge users can install Keyvane from <a href="https://microsoftedge.microsoft.com/addons/detail/jpoallppdlhipeeadnckmepilfckdold" rel="noopener">Microsoft Edge Add-ons</a>, and it syncs through Edge sync. In Brave, install it from the Chrome Web Store; the vault stays on that computer, so use Settings, Export and Import to move it.</p></details>
       </div>
     </div>
   </section>
@@ -278,7 +278,7 @@
   <section class="final">
     <div class="wrap" style="display:grid;gap:20px;justify-items:center">
       <h2>Stop reusing passwords <span class="grad">today.</span></h2>
-      <a class="cta" href="https://chromewebstore.google.com/detail/occfjinobiaefhbkngbolamflknedmlo" rel="noopener">Add Keyvane to Chrome</a>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><a class="cta" href="https://chromewebstore.google.com/detail/occfjinobiaefhbkngbolamflknedmlo" rel="noopener">Add Keyvane to Chrome</a><a class="ghost" href="https://microsoftedge.microsoft.com/addons/detail/jpoallppdlhipeeadnckmepilfckdold" rel="noopener">Get it for Edge</a></div>
     </div>
   </section>
 </main>
