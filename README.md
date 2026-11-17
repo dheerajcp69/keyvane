@@ -1,6 +1,6 @@
 # Keyvane
 
-**A free, end-to-end encrypted password and passkey manager for Chrome, Edge and Safari.** No account, no servers, no tracking.
+**A free, end-to-end encrypted password and passkey manager for Chrome and Edge.** No account, no servers, no tracking.
 
 [Install from the Chrome Web Store](https://chromewebstore.google.com/detail/occfjinobiaefhbkngbolamflknedmlo) · [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/jpoallppdlhipeeadnckmepilfckdold) · [Website](https://keyvane.vercel.app) · [Privacy policy](https://keyvane.vercel.app/privacy)
 
@@ -36,7 +36,7 @@ All cryptography uses the browser's Web Crypto API. The code is in [`extension/c
 ## Repository layout
 
 ```
-extension/   the extension for Chrome, Edge and Safari (Manifest V3, no build step, no dependencies)
+extension/   the extension for Chrome and Edge (Manifest V3, no build step, no dependencies)
   crypto.js      key derivation, encryption, password generator
   store.js       chunked vault storage on chrome.storage.sync
   vaultops.js    shared vault logic, CSV import, "known logins" index
@@ -48,7 +48,7 @@ extension/   the extension for Chrome, Edge and Safari (Manifest V3, no build st
   lock3d.js, fx.js  the popup's 3D padlock and starfield
   platform.js    browser-specific wording (Chrome, Edge, Safari)
   fonts/         Space Grotesk, Inter, JetBrains Mono (SIL Open Font License), bundled so nothing loads from the web
-safari/      script and guide to build the Safari app in Xcode
+safari/      experimental Safari build kit (not released yet)
 site/        keyvane.vercel.app (static, deployed on Vercel)
 store/       Chrome Web Store screenshots and promo images
 ```
@@ -58,7 +58,7 @@ store/       Chrome Web Store screenshots and promo images
 1. Clone this repo.
 2. Open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked** and pick the `extension` folder.
 
-For Safari, see [`safari/README.md`](safari/README.md).
+A Safari version is in progress but not released; the build kit is in [`safari/`](safari/README.md).
 
 ## Permissions
 
