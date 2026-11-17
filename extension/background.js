@@ -2,6 +2,7 @@
 // Runs only after the user turns on "Offer to save passwords" (optional permission).
 import * as V from './vaultops.js';
 import * as PK from './passkeys.js';
+import { offerOn } from './platform.js';
 
 const SCRIPT_ID = 'keyvane-capture';
 const PK_ID = 'keyvane-passkeys';
@@ -14,9 +15,8 @@ const isTop = s => s.frameId === 0 || s.frameId == null;
 let syncing = Promise.resolve();
 function syncCaptureScript() { return (syncing = syncing.then(doSync, doSync)); }
 async function doSync() {
-  const granted = await chrome.permissions.contains(ALL);
   const { settings } = await chrome.storage.sync.get('settings');
-  const on = granted && settings?.offerSave !== false;
+  const on = await offerOn(settings);
   const pkOn = on && settings?.passkeys !== false;
   const reg = (await chrome.scripting.getRegisteredContentScripts()).map(r => r.id);
   const want = [

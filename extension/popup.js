@@ -3,7 +3,7 @@ import * as Store from './store.js';
 import * as V from './vaultops.js';
 import { mountLock } from './lock3d.js';
 import { startFx } from './fx.js';
-import { P } from './platform.js';
+import { P, offerOn, requestSiteAccess } from './platform.js';
 
 
 const app = document.getElementById('app');
@@ -678,8 +678,7 @@ async function onCardClick(ev) {
 
 /* ---------- offer-to-save permission ---------- */
 async function offerEnabled() {
-  const granted = await chrome.permissions.contains({ origins: ['<all_urls>'] });
-  return granted && S.settings.offerSave !== false;
+  return offerOn(S.settings);
 }
 
 // Chrome's permission dialog closes the popup, so ask from a full tab.
@@ -705,16 +704,25 @@ function renderEnableSave() {
     </div>
   </section>`;
   $('#allow').addEventListener('click', async () => {
-    const ok = await chrome.permissions.request({ origins: ['<all_urls>'] });
+    const ok = await requestSiteAccess();
     if (!ok) return toast('Permission not granted', 'bad');
     S.settings.offerSave = true;
     await Store.setSetting('settings', S.settings);
     app.innerHTML = `<section class="view"><div class="hero"><div class="hero-mark">${I.shield.replace(/currentColor/g, '#fff')}</div>
       <div><h1>You're all set.</h1><p style="margin-top:8px">Next time you sign in or sign up somewhere, Keyvane will help. You can close this tab.</p></div>
+      ${P.id === 'safari' ? `<div class="note">${I.shield}<span>Safari decides which websites Keyvane can use. In Safari → Settings → Extensions → Keyvane, set websites to “Allow”, or choose “Always Allow on Every Website” when Safari asks.</span></div>` : ''}
       <button class="btn btn-ghost block" id="done">Close tab</button></div></section>`;
     $('#done').addEventListener('click', () => window.close());
   });
   $('#skip').addEventListener('click', () => (IN_TAB ? window.close() : renderList()));
+}
+
+// Safari: the switch turns the feature on; Safari's own settings decide which sites.
+async function safariTurnOn() {
+  S.settings.offerSave = true;
+  await Store.setSetting('settings', S.settings);
+  requestSiteAccess();
+  toast('On — allow Keyvane on websites in Safari settings');
 }
 
 function bindOfferSwitch() {
@@ -732,7 +740,11 @@ function bindOfferSwitch() {
   const paintPk = async () => { const on = (await offerEnabled()) && S.settings.passkeys !== false; pk.setAttribute('aria-checked', String(on)); pk.classList.toggle('on', on); };
   paintPk();
   pk.addEventListener('click', async () => {
-    if (!(await offerEnabled())) { S.settings.passkeys = true; await Store.setSetting('settings', S.settings); return openEnableSave(); }
+    if (!(await offerEnabled())) {
+      S.settings.passkeys = true; await Store.setSetting('settings', S.settings);
+      if (P.id !== 'safari') return openEnableSave();
+      await safariTurnOn(); $('#offer').classList.add('on'); $('#offer').setAttribute('aria-checked', 'true'); return paintPk();
+    }
     S.settings.passkeys = S.settings.passkeys === false;
     await Store.setSetting('settings', S.settings);
     paintPk();
@@ -742,9 +754,11 @@ function bindOfferSwitch() {
     if (sw.getAttribute('aria-checked') === 'true') {
       S.settings.offerSave = false;
       await Store.setSetting('settings', S.settings);
-      try { await chrome.permissions.remove({ origins: ['<all_urls>'] }); } catch {}
+      if (P.id !== 'safari') try { await chrome.permissions.remove({ origins: ['<all_urls>'] }); } catch {}
       paint(false); paintPk();
       toast('Save and suggest turned off');
+    } else if (P.id === 'safari') {
+      await safariTurnOn(); paint(true); paintPk();
     } else openEnableSave();
   });
 }
